@@ -59,3 +59,18 @@ typings/
 
 # next.js build output
 .next
+
+# my personal file to track git commits
+git_buffer.txt
+
+# Mac files
+.DS_Store
+
+# json-server db
+db.json
+
+# Webstorm metadata
+.idea
+
+# Build folder
+build
