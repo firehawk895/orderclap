@@ -1,41 +1,9 @@
 import React from "react";
 import { Table } from "reactstrap";
+import { connect } from "react-redux";
+import * as orderActions from "../../redux/actions/orderActions";
 import Moment from "react-moment";
-
-const ORDERS = [
-  {
-    id: 35150614,
-    status: "checked-in",
-    supplier: "Organo Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1502"
-  },
-  {
-    id: 35150614,
-    status: "submitted",
-    supplier: "Organo Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1503"
-  },
-  {
-    id: 35150614,
-    status: "checked-in",
-    supplier: "Ghoda Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1504"
-  },
-  {
-    id: 35150614,
-    status: "checked-in",
-    supplier: "Kaithal Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1505"
-  }
-];
+import { bindActionCreators } from "redux";
 
 class OrderRow extends React.Component {
   render() {
@@ -87,19 +55,42 @@ class OrderTable extends React.Component {
 
 class FilterableOrdersTable extends React.Component {
   render() {
-    return <OrderTable orders={ORDERS} />;
+    return <OrderTable orders={this.props.orders} />;
   }
 }
 
 class OrdersPage extends React.Component {
+  componentDidMount() {
+    this.props.actions.loadOrders().catch(error => {
+      alert("Loading orders failed" + error);
+    });
+  }
+
   render() {
     return (
       <>
         <h2>Order History</h2>
-        <FilterableOrdersTable orders={ORDERS} />
+        <FilterableOrdersTable orders={this.props.orders} />
       </>
     );
   }
 }
 
-export default OrdersPage;
+function mapStateToProps(state) {
+  return {
+    orders: state.orders
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      loadOrders: bindActionCreators(orderActions.loadOrders, dispatch)
+    }
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrdersPage);
