@@ -22,11 +22,9 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    loadOrders: bindActionCreators(loadOrders, dispatch)
-  };
-}
+const mapDispatchToProps = {
+  loadOrders
+};
 
 function FilterableOrdersTable({ orders }) {
   return <OrderTable orders={orders} />;
