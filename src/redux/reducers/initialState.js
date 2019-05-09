@@ -1,4 +1,6 @@
 export default {
-  courses: [],
-  authors: []
+  orders: {
+    results: []
+  },
+  apiCallsInProgress: 0
 };

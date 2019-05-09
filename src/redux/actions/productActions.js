@@ -1,18 +1,17 @@
 import * as types from "./actionTypes";
-import * as orderApi from "../../api/orderApi";
-import { CoverageSummary } from "istanbul-lib-coverage";
+import * as orderApi from "../../api/productsApi";
 
-export function loadOrdersSuccess(orders) {
-  return { type: types.LOAD_ORDERS_SUCCESS, orders };
+export function loadProductsSuccess(products) {
+  return { type: types.LOAD_PRODUCTS_SUCCESS, products };
 }
 
 // look ma its a thunk
-export function loadOrders() {
+export function loadProducts() {
   return function(dispatch) {
     return orderApi
-      .getOrders()
+      .getProducts()
       .then(orders => {
-        dispatch(loadOrdersSuccess(orders));
+        dispatch(loadProductsSuccess(orders));
       })
       .catch(error => {
         //TODO: convert this to error handler, toast and shiz I guess
