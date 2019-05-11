@@ -1,130 +1,190 @@
-const old_orders = [
-  {
-    id: 35150614,
-    status: "checked-in",
-    supplier: "Organo Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1502"
-  },
-  {
-    id: 35150615,
-    status: "submitted",
-    supplier: "Organo Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1503"
-  },
-  {
-    id: 35150616,
-    status: "checked-in",
-    supplier: "Ghoda Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1504"
-  },
-  {
-    id: 35150617,
-    status: "checked-in",
-    supplier: "Kaithal Fresh",
-    order_placed: "20080915T155300",
-    order_total: 3072,
-    invoice_no: "1505"
-  }
-];
-
-const products = [
-  {
-    id: 1,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 10000
-  },
-  {
-    id: 2,
-    supplier: "Bhagat Singh Baby",
-    name: "Goat Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 243
-  },
-  {
-    id: 3,
-    supplier: "Lagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "pounds",
-    description: "special spoilt cheese, best used after expiry",
-    price: 543
-  },
-  {
-    id: 4,
-    supplier: "jagat asdas Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "cans",
-    description: "special spoilt cheese, best used after expiry",
-    price: 200
-  },
-  {
-    id: 5,
-    supplier: "asdasd Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 4000
-  },
-  {
-    id: 6,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 10
-  },
-  {
-    id: 7,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 20
-  },
-  {
-    id: 8,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 220
-  },
-  {
-    id: 9,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 300
-  },
-  {
-    id: 10,
-    supplier: "jagat Singh Baby",
-    name: "Amul Cheese (spoilt)",
-    sku: "1231230022",
-    unit: "kg",
-    description: "special spoilt cheese, best used after expiry",
-    price: 2000
-  }
-];
+const products = {
+  count: 9,
+  next: null,
+  previous: null,
+  results: [
+    {
+      id: 1,
+      supplier: {
+        id: 1,
+        created_at: "2018-12-15T10:55:56.632579Z",
+        modified_at: "2018-12-15T11:01:20.804113Z",
+        name: "HK Flesh Meat",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "flesh@mailinator.com",
+        gst_no: "1234"
+      },
+      name: "Chicken",
+      sku: "001",
+      unit: "1 kg",
+      description: "whole chicken",
+      price: "200.00"
+    },
+    {
+      id: 2,
+      supplier: {
+        id: 1,
+        created_at: "2018-12-15T10:55:56.632579Z",
+        modified_at: "2018-12-15T11:01:20.804113Z",
+        name: "HK Flesh Meat",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "flesh@mailinator.com",
+        gst_no: "1234"
+      },
+      name: "Pepperoni",
+      sku: "007",
+      unit: "1 kg",
+      description: "asdasdasd",
+      price: "250.00"
+    },
+    {
+      id: 3,
+      supplier: {
+        id: 1,
+        created_at: "2018-12-15T10:55:56.632579Z",
+        modified_at: "2018-12-15T11:01:20.804113Z",
+        name: "HK Flesh Meat",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "flesh@mailinator.com",
+        gst_no: "1234"
+      },
+      name: "Cheddar Cheese",
+      sku: "0012",
+      unit: "250 gms",
+      description: "asdasd",
+      price: "1500.00"
+    },
+    {
+      id: 4,
+      supplier: {
+        id: 2,
+        created_at: "2018-12-23T10:10:25.251141Z",
+        modified_at: "2018-12-23T10:10:25.251200Z",
+        name: "Tez Taaza",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "teztaza@mailinator.com",
+        gst_no: "3213123123"
+      },
+      name: "Amul Taaza",
+      sku: "12312",
+      unit: "1 Litre",
+      description: "asdasdasd",
+      price: "200.00"
+    },
+    {
+      id: 5,
+      supplier: {
+        id: 2,
+        created_at: "2018-12-23T10:10:25.251141Z",
+        modified_at: "2018-12-23T10:10:25.251200Z",
+        name: "Tez Taaza",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "teztaza@mailinator.com",
+        gst_no: "3213123123"
+      },
+      name: "Vicco Turmeric",
+      sku: "12313",
+      unit: "1 kg",
+      description: "asdasd",
+      price: "200.00"
+    },
+    {
+      id: 6,
+      supplier: {
+        id: 2,
+        created_at: "2018-12-23T10:10:25.251141Z",
+        modified_at: "2018-12-23T10:10:25.251200Z",
+        name: "Tez Taaza",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "teztaza@mailinator.com",
+        gst_no: "3213123123"
+      },
+      name: "Bear liver",
+      sku: "123123",
+      unit: "1 kg",
+      description: "asdasd",
+      price: "600.00"
+    },
+    {
+      id: 7,
+      supplier: {
+        id: 3,
+        created_at: "2018-12-23T10:10:54.611204Z",
+        modified_at: "2019-01-17T05:40:36.422401Z",
+        name: "Fit Fat Falafel",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "fitfat@mailinator.com",
+        gst_no: "21313123"
+      },
+      name: "Macac Meat",
+      sku: "0014",
+      unit: "1 kg",
+      description: "asdasdas",
+      price: "2400.00"
+    },
+    {
+      id: 8,
+      supplier: {
+        id: 3,
+        created_at: "2018-12-23T10:10:54.611204Z",
+        modified_at: "2019-01-17T05:40:36.422401Z",
+        name: "Fit Fat Falafel",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "fitfat@mailinator.com",
+        gst_no: "21313123"
+      },
+      name: "Plankton",
+      sku: "121111",
+      unit: "250 gms",
+      description: "sdsdff",
+      price: "2000.00"
+    },
+    {
+      id: 9,
+      supplier: {
+        id: 3,
+        created_at: "2018-12-23T10:10:54.611204Z",
+        modified_at: "2019-01-17T05:40:36.422401Z",
+        name: "Fit Fat Falafel",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "fitfat@mailinator.com",
+        gst_no: "21313123"
+      },
+      name: "Rat meat",
+      sku: "110022",
+      unit: "1 kg",
+      description: "asdasd",
+      price: "2000.00"
+    }
+  ]
+};
 
 const orders = {
   count: 42,

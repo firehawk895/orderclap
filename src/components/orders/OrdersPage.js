@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Table } from "reactstrap";
 import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
-import { bindActionCreators } from "redux";
 
 function OrdersPage({ loadOrders, orders: { results: order_list } }) {
   useEffect(() => {
