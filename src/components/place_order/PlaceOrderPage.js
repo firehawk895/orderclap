@@ -45,6 +45,10 @@ function ProductTable({ products }) {
   );
 }
 
+function handleChange(event) {
+  alert("loda");
+}
+
 function ProductRow({
   product: {
     name,
@@ -65,7 +69,15 @@ function ProductRow({
       <td>{price}</td>
       <td>
         <InputGroup>
-          <Input placeholder="Qty" min={0} max={100} type="number" step="1" />
+          <Input
+            value={10}
+            placeholder="Qty"
+            min={0}
+            max={100}
+            type="number"
+            step="1"
+            onChange={handleChange}
+          />
         </InputGroup>
       </td>
     </tr>

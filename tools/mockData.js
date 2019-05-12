@@ -965,9 +965,142 @@ const orders = {
 //   authorId: null,
 //   category: ""
 // };
-
+const carts = {
+  count: 3,
+  next: null,
+  previous: null,
+  results: [
+    {
+      supplier: {
+        id: 1,
+        created_at: "2018-12-15T10:55:56.632579Z",
+        modified_at: "2018-12-15T11:01:20.804113Z",
+        name: "HK Flesh Meat",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "flesh@mailinator.com",
+        gst_no: "1234"
+      },
+      product: {
+        id: 2,
+        created_at: "2018-12-23T10:11:36.560624Z",
+        modified_at: "2018-12-23T10:11:36.560654Z",
+        name: "Pepperoni",
+        sku: "007",
+        unit: "1 kg",
+        description: "asdasdasd",
+        price: "250.00",
+        supplier: 1
+      },
+      restaurant: {
+        id: 1,
+        created_at: "2018-12-15T11:00:41.622136Z",
+        modified_at: "2018-12-15T11:00:41.622164Z",
+        name: "Crustos",
+        address: "",
+        phone_number: "",
+        email: "crustos@mailinator.com",
+        total_orders: 0,
+        total_order_value: "0.00",
+        total_suppliers: 0,
+        total_inventory_items: 0,
+        fav_products: [],
+        associated_suppliers: [1, 2, 3]
+      },
+      quantity: 2,
+      note: "dont know should there be a note"
+    },
+    {
+      supplier: {
+        id: 1,
+        created_at: "2018-12-15T10:55:56.632579Z",
+        modified_at: "2018-12-15T11:01:20.804113Z",
+        name: "HK Flesh Meat",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "flesh@mailinator.com",
+        gst_no: "1234"
+      },
+      product: {
+        id: 3,
+        created_at: "2018-12-23T10:12:33.439648Z",
+        modified_at: "2018-12-23T10:12:33.439698Z",
+        name: "Cheddar Cheese",
+        sku: "0012",
+        unit: "250 gms",
+        description: "asdasd",
+        price: "1500.00",
+        supplier: 1
+      },
+      restaurant: {
+        id: 1,
+        created_at: "2018-12-15T11:00:41.622136Z",
+        modified_at: "2018-12-15T11:00:41.622164Z",
+        name: "Crustos",
+        address: "",
+        phone_number: "",
+        email: "crustos@mailinator.com",
+        total_orders: 0,
+        total_order_value: "0.00",
+        total_suppliers: 0,
+        total_inventory_items: 0,
+        fav_products: [],
+        associated_suppliers: [1, 2, 3]
+      },
+      quantity: 5,
+      note: "dont know should there be a note"
+    },
+    {
+      supplier: {
+        id: 2,
+        created_at: "2018-12-23T10:10:25.251141Z",
+        modified_at: "2018-12-23T10:10:25.251200Z",
+        name: "Tez Taaza",
+        min_order: 0,
+        sales_rep: "Loda Kumar",
+        address: "",
+        phone_number: "",
+        email: "teztaza@mailinator.com",
+        gst_no: "3213123123"
+      },
+      product: {
+        id: 5,
+        created_at: "2018-12-23T10:13:10.947719Z",
+        modified_at: "2018-12-23T10:13:10.947759Z",
+        name: "Vicco Turmeric",
+        sku: "12313",
+        unit: "1 kg",
+        description: "asdasd",
+        price: "200.00",
+        supplier: 2
+      },
+      restaurant: {
+        id: 1,
+        created_at: "2018-12-15T11:00:41.622136Z",
+        modified_at: "2018-12-15T11:00:41.622164Z",
+        name: "Crustos",
+        address: "",
+        phone_number: "",
+        email: "crustos@mailinator.com",
+        total_orders: 0,
+        total_order_value: "0.00",
+        total_suppliers: 0,
+        total_inventory_items: 0,
+        fav_products: [],
+        associated_suppliers: [1, 2, 3]
+      },
+      quantity: 3,
+      note: "look ma its a note"
+    }
+  ]
+};
 // Using CommonJS style export so we can consume via Node (without using Babel-node)
 module.exports = {
   orders,
-  products
+  products,
+  carts
 };
