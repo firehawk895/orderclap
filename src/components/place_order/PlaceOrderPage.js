@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Table } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
@@ -9,7 +9,7 @@ function PlaceOrderPage({
   loadProducts,
   loadCarts,
   products: { results: product_list },
-  carts: { results: cart_list }
+  cartMap
 }) {
   useEffect(() => {
     loadProducts();
@@ -18,15 +18,19 @@ function PlaceOrderPage({
   return (
     <>
       <h2>Place Order:</h2>
-      <FilterableProductsTable products={product_list} />
+      <FilterableProductsTable products={product_list} cartMap={cartMap} />
     </>
   );
 }
 
 function mapStateToProps(state) {
+  const cartMap = {};
+  state.carts.results.forEach(cart_item => {
+    cartMap[cart_item.product.id] = cart_item.quantity;
+  });
   return {
     products: state.products,
-    carts: state.carts
+    cartMap
   };
 }
 
@@ -35,14 +39,20 @@ const mapDispatchToProps = {
   loadCarts
 };
 
-function FilterableProductsTable({ products }) {
-  return <ProductTable products={products} />;
+function FilterableProductsTable({ products, cartMap }) {
+  return <ProductTable products={products} cartMap={cartMap} />;
 }
 
-function ProductTable({ products }) {
+function ProductTable({ products, cartMap }) {
   const rows = [];
   products.forEach(product => {
-    rows.push(<ProductRow key={product.id} product={product} />);
+    rows.push(
+      <ProductRow
+        key={product.id}
+        product={product}
+        initialQty={product.id in cartMap ? cartMap[product.id] : 0}
+      />
+    );
   });
   return (
     <>
@@ -54,10 +64,6 @@ function ProductTable({ products }) {
   );
 }
 
-function handleChange(event) {
-  alert("loda");
-}
-
 function ProductRow({
   product: {
     name,
@@ -66,8 +72,16 @@ function ProductRow({
     sku,
     unit,
     price
-  }
+  },
+  initialQty
 }) {
+  console.log("rendering product : " + name);
+  const [qty, setQty] = useState(initialQty);
+
+  function handleChange(event) {
+    setQty(event.target.value);
+  }
+
   return (
     <tr>
       <td>{name}</td>
@@ -79,7 +93,7 @@ function ProductRow({
       <td>
         <InputGroup>
           <Input
-            value={10}
+            value={qty}
             placeholder="Qty"
             min={0}
             max={100}
