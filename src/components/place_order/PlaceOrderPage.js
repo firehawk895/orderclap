@@ -1,9 +1,10 @@
 import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Table } from "reactstrap";
+import { Table, Button } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
 import { loadCarts } from "../../redux/actions/cartActions";
 import { InputGroup, Input } from "reactstrap";
+import * as constants from "./constants";
 
 function PlaceOrderPage({
   loadProducts,
@@ -75,11 +76,37 @@ function ProductRow({
   },
   initialQty
 }) {
-  console.log("rendering product : " + name);
+  const initialButton = constants.CART_ADD;
   const [qty, setQty] = useState(initialQty);
+  const [button, setButton] = useState(initialButton);
+
+  // looks like the inital state setting is async and you need to add this
+  useEffect(() => {
+    setQty(initialQty);
+    if (initialQty > 0) {
+      setButton(constants.CART_ADDED);
+    } else {
+      setButton(initialButton);
+    }
+  }, [initialQty]);
+
+  useEffect(() => {
+    if (initialQty > 0) {
+      if (qty == initialQty) {
+        setButton(constants.CART_ADDED);
+      } else {
+        setButton(constants.CART_UPDATE);
+      }
+    }
+  }, [qty]);
 
   function handleChange(event) {
-    setQty(event.target.value);
+    const { name, value } = event.target;
+    // don't allow an existing cart item quantity to be reduced to 0
+    if (value == 0) {
+      return;
+    }
+    setQty(value);
   }
 
   return (
@@ -102,6 +129,7 @@ function ProductRow({
             onChange={handleChange}
           />
         </InputGroup>
+        <Button color={button.colour}>{button.text}</Button>
       </td>
     </tr>
   );
