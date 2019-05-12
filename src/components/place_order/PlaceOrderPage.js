@@ -2,11 +2,18 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Table } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
+import { loadCarts } from "../../redux/actions/cartActions";
 import { InputGroup, Input } from "reactstrap";
 
-function PlaceOrderPage({ loadProducts, products: { results: product_list } }) {
+function PlaceOrderPage({
+  loadProducts,
+  loadCarts,
+  products: { results: product_list },
+  carts: { results: cart_list }
+}) {
   useEffect(() => {
     loadProducts();
+    loadCarts();
   }, []);
   return (
     <>
@@ -18,12 +25,14 @@ function PlaceOrderPage({ loadProducts, products: { results: product_list } }) {
 
 function mapStateToProps(state) {
   return {
-    products: state.products
+    products: state.products,
+    carts: state.carts
   };
 }
 
 const mapDispatchToProps = {
-  loadProducts
+  loadProducts,
+  loadCarts
 };
 
 function FilterableProductsTable({ products }) {

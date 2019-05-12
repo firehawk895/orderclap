@@ -5,5 +5,8 @@ export default {
   products: {
     results: []
   },
+  carts: {
+    results: []
+  },
   apiCallsInProgress: 0
 };
