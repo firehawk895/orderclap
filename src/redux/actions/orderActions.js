@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import * as orderApi from "../../api/orderApi";
-import { CoverageSummary } from "istanbul-lib-coverage";
+import { beginApiCall } from "./apiStatusActions";
 
 export function loadOrdersSuccess(orders) {
   return { type: types.LOAD_ORDERS_SUCCESS, orders };
@@ -9,6 +9,7 @@ export function loadOrdersSuccess(orders) {
 // look ma its a thunk
 export function loadOrders() {
   return function(dispatch) {
+    dispatch(beginApiCall());
     return orderApi
       .getOrders()
       .then(orders => {

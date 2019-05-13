@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
 import * as orderApi from "../../api/productsApi";
+import { beginApiCall } from "./apiStatusActions";
 
 export function loadProductsSuccess(products) {
   return { type: types.LOAD_PRODUCTS_SUCCESS, products };
@@ -8,6 +9,7 @@ export function loadProductsSuccess(products) {
 // look ma its a thunk
 export function loadProducts() {
   return function(dispatch) {
+    dispatch(beginApiCall());
     return orderApi
       .getProducts()
       .then(orders => {

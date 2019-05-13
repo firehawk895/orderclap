@@ -5,6 +5,8 @@ import Header from "./common/Header";
 
 import OrdersPage from "./orders/OrdersPage";
 import PlaceOrderPage from "./place_order/PlaceOrderPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route exact path="/" component={OrdersPage} />
         <Route path="/place_order" component={PlaceOrderPage} />
       </Switch>
+      <ToastContainer autoClose={3000} hideProgressBar />
     </div>
   );
 }
