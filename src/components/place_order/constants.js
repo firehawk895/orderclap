@@ -1,6 +1,6 @@
 export const CART_ADDED = {
   text: "Added",
-  colour: "secondary"
+  colour: "success"
 };
 export const CART_UPDATE = {
   text: "Update",

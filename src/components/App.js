@@ -8,11 +8,12 @@ import PlaceOrderPage from "./place_order/PlaceOrderPage";
 import OrderDetailsPage from "./orders/OrderDetailsPage";
 import OrderCheckInPage from "./checkin/OrderCheckInPage";
 import { ToastContainer } from "react-toastify";
+import { Container } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <div className="container-fluid">
+    <Container fluid>
       <Header />
       <Switch>
         <Route exact path="/" component={OrdersPage} />
@@ -21,7 +22,7 @@ function App() {
         <Route path="/checkin/:id" component={OrderCheckInPage} />
       </Switch>
       <ToastContainer autoClose={3000} hideProgressBar />
-    </div>
+    </Container>
   );
 }
 

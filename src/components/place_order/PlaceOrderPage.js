@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { Table, Button } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
 import { loadCarts } from "../../redux/actions/cartActions";
-import { InputGroup, Input } from "reactstrap";
+import { InputGroup, Input, Col, Row, Container } from "reactstrap";
+import Cart from "./Cart";
 import * as constants from "./constants";
 
 function PlaceOrderPage({
@@ -17,10 +18,17 @@ function PlaceOrderPage({
     loadCarts();
   }, []);
   return (
-    <>
+    <Container>
       <h2>Place Order:</h2>
-      <FilterableProductsTable products={product_list} cartMap={cartMap} />
-    </>
+      <Row>
+        <Col lg="8">
+          <FilterableProductsTable products={product_list} cartMap={cartMap} />
+        </Col>
+        <Col lg="4">
+          <Cart />
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
@@ -111,12 +119,15 @@ function ProductRow({
 
   return (
     <tr>
-      <td>{name}</td>
-      <td>{id}</td>
-      <td>{supplier_name}</td>
-      <td>{sku}</td>
-      <td>{unit}</td>
-      <td>{price}</td>
+      <td>
+        {supplier_name}
+        <br />
+        <b className="text-primary">{name}</b>
+        <br />
+        SKU: {sku}
+        <br />
+        &#8377; {price}/{unit}
+      </td>
       <td>
         <InputGroup>
           <Input
@@ -129,7 +140,11 @@ function ProductRow({
             onChange={handleChange}
           />
         </InputGroup>
-        <Button color={button.colour}>{button.text}</Button>
+      </td>
+      <td>
+        <Button color={button.colour} block>
+          {button.text}
+        </Button>
       </td>
     </tr>
   );
