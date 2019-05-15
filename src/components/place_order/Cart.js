@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { CardHeader, CardBody, Row, Col } from "reactstrap";
+import { CardHeader, CardBody, Row, Col, Card } from "reactstrap";
 
 function Cart({ supplier_map }) {
   const cart_supplier_rows = [];
@@ -75,49 +75,31 @@ function CartSupplierRow({ supplier, cartItems }) {
   });
   return (
     <>
-      <CardHeader>{supplier.name}</CardHeader>
-      {cart_item_rows}
+      <Card>
+        <CardHeader>{supplier.name}</CardHeader>
+        {cart_item_rows}
+      </Card>
     </>
   );
 }
 
 function CartItemRow({ productName, price, unit, quantity }) {
-  // return (
-  //   <p>
-  //     {productName}
-  //     <br />
-  //     Rs. {price}/{unit}
-  //     <br />
-  //     {quantity}
-  //   </p>
-  // );
   return (
     <CardBody>
       <Row>
-        <Col lg="10">
-          <div className="h5">Amul Pizza Cheese</div>
-          Rs. 336.00/kg
+        <Col lg="9">
+          <div className="h5">{productName}</div>
+          &#8377; {price}/{unit}
           <br />
           <i className="fa fa-edit text-dark" /> Edit &nbsp;
           <i className="fa fa-trash text-danger" /> Remove
         </Col>
-        <Col lg="2">
-          <h2>2</h2>
+        <Col className="p-0" lg="3">
+          <h4>{quantity}</h4>
         </Col>
       </Row>
     </CardBody>
   );
-  //   <div class="row">
-  //     <div class="col-10">
-  //       <div class="h5">Amul Pizza Cheese</div>
-  //       Rs. 336.00/kg
-  //       <br />
-  //       <i class="fa fa-edit text-dark" /> Edit
-  //       <i class="fa fa-trash text-danger" /> Remove
-  //     </div>
-
-  //   </div>
-  // </div>;
 }
 
 export default connect(

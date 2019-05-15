@@ -21,10 +21,10 @@ function PlaceOrderPage({
     <Container>
       <h2>Place Order:</h2>
       <Row>
-        <Col lg="8">
+        <Col lg="9">
           <FilterableProductsTable products={product_list} cartMap={cartMap} />
         </Col>
-        <Col lg="4">
+        <Col lg="3">
           <Cart />
         </Col>
       </Row>
