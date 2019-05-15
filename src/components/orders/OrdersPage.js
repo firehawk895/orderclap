@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { Table, Spinner } from "reactstrap";
+import { Table } from "reactstrap";
 import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
 import { Button } from "reactstrap";
 import { is8601_to_readable } from "../../utils";
+import SpinnerWrapper from "../common/SpinnerWrapper";
 
 function OrdersPage({
   loadOrders,
@@ -18,7 +19,7 @@ function OrdersPage({
     <>
       <h2>Order History</h2>
       {loading ? (
-        <Spinner color="success" />
+        <SpinnerWrapper />
       ) : (
         <FilterableOrdersTable orders={order_list} history={history} />
       )}

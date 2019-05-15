@@ -6,29 +6,40 @@ import { loadCarts } from "../../redux/actions/cartActions";
 import { InputGroup, Input, Col, Row, Container } from "reactstrap";
 import Cart from "./Cart";
 import * as constants from "./constants";
+import SpinnerWrapper from "../common/SpinnerWrapper";
 
 function PlaceOrderPage({
   loadProducts,
   loadCarts,
   products: { results: product_list },
-  cartMap
+  cartMap,
+  loading
 }) {
   useEffect(() => {
     loadProducts();
     loadCarts();
   }, []);
   return (
-    <Container>
+    <>
       <h2>Place Order:</h2>
-      <Row>
-        <Col lg="9">
-          <FilterableProductsTable products={product_list} cartMap={cartMap} />
-        </Col>
-        <Col lg="3">
-          <Cart />
-        </Col>
-      </Row>
-    </Container>
+      {loading ? (
+        <SpinnerWrapper />
+      ) : (
+        <Container>
+          <Row>
+            <Col lg="9">
+              <FilterableProductsTable
+                products={product_list}
+                cartMap={cartMap}
+              />
+            </Col>
+            <Col lg="3">
+              <Cart />
+            </Col>
+          </Row>
+        </Container>
+      )}
+    </>
   );
 }
 
@@ -39,7 +50,8 @@ function mapStateToProps(state) {
   });
   return {
     products: state.products,
-    cartMap
+    cartMap,
+    loading: state.apiCallsInProgress > 0
   };
 }
 
