@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { toast } from "react-toastify";
 
-function DeleteCartModal({ cartId, open, setModalOpen }) {
+function DeleteCartModal({
+  cartItem,
+  cartId,
+  open,
+  setModalOpen,
+  deleteCartItem
+}) {
   const closeBtn = (
     <button
       className="close"
@@ -12,6 +19,12 @@ function DeleteCartModal({ cartId, open, setModalOpen }) {
       &times;
     </button>
   );
+
+  function handleDeleteCartItem() {
+    setModalOpen(false);
+    toast.success("Cart Item deleted.");
+    deleteCartItem(cartItem);
+  }
 
   return (
     <>
@@ -27,12 +40,7 @@ function DeleteCartModal({ cartId, open, setModalOpen }) {
           >
             No!
           </Button>{" "}
-          <Button
-            color="danger"
-            onClick={() => {
-              setModalOpen(false);
-            }}
-          >
+          <Button color="danger" onClick={handleDeleteCartItem}>
             Yes, Delete it
           </Button>
         </ModalFooter>

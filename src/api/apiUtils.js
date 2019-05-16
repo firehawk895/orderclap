@@ -1,4 +1,6 @@
 export async function handleResponse(response) {
+  // mostly a delete or a create that does not return a json
+  if (response.status === 204) return {};
   if (response.ok) return response.json();
   if (response.status === 400) {
     // So, a server-side validation error occurred.

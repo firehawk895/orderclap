@@ -3,15 +3,18 @@ import { connect } from "react-redux";
 import { CardHeader, CardBody, Row, Col, Card, Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import DeleteCartModal from "./DeleteCartModal";
+import { deleteCartItem } from "../../redux/actions/cartActions";
 
-function Cart({ supplier_map }) {
+function Cart({ supplier_map, deleteCartItem }) {
   const cart_supplier_rows = [];
   for (let supplier_id in supplier_map) {
+    console.log(supplier_id);
     cart_supplier_rows.push(
       <CartSupplierRow
         key={supplier_id}
         supplier={supplier_map[supplier_id].supplier}
         cartItems={supplier_map[supplier_id].cart_items}
+        deleteCartItem={deleteCartItem}
       />
     );
   }
@@ -33,6 +36,8 @@ function mapStateToProps(state) {
     map[obj.supplier.id] = { supplier: obj.supplier, cart_items: [] };
     return map;
   }, {});
+  console.log("what a map");
+  console.log(supplier_map);
   // filling each supplier with its cart_items
   state.carts.results.forEach(result => {
     supplier_map[result.supplier.id].cart_items.push(result);
@@ -65,9 +70,11 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  deleteCartItem
+};
 
-function CartSupplierRow({ supplier, cartItems }) {
+function CartSupplierRow({ supplier, cartItems, deleteCartItem }) {
   const cart_item_rows = [];
   cartItems.forEach(cartItem => {
     let {
@@ -76,12 +83,14 @@ function CartSupplierRow({ supplier, cartItems }) {
     } = cartItem;
     cart_item_rows.push(
       <CartItemRow
-        key={cartItem.product.id}
+        key={cartItem.id}
+        cartItem={cartItem}
         productName={product_name}
         price={price}
         unit={unit}
         quantity={quantity}
         cartId={cartItem.id}
+        deleteCartItem={deleteCartItem}
       />
     );
   });
@@ -95,7 +104,15 @@ function CartSupplierRow({ supplier, cartItems }) {
   );
 }
 
-function CartItemRow({ productName, price, unit, quantity, cartId }) {
+function CartItemRow({
+  cartItem,
+  productName,
+  price,
+  unit,
+  quantity,
+  cartId,
+  deleteCartItem
+}) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -104,6 +121,8 @@ function CartItemRow({ productName, price, unit, quantity, cartId }) {
         cartId={cartId}
         open={modalOpen}
         setModalOpen={setModalOpen}
+        deleteCartItem={deleteCartItem}
+        cartItem={cartItem}
       />
       <CardBody>
         <Row>
