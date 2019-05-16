@@ -6,6 +6,9 @@ import { Button } from "reactstrap";
 import { is8601_to_readable } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 
+/* Maybe you can refactor the usage of history, which in fact is quite tatti,
+to using the link component or atleast pass down hostory as a reference, and not super prop drilling */
+
 function OrdersPage({
   loadOrders,
   orders: { results: order_list },

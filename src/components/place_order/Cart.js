@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { CardHeader, CardBody, Row, Col, Card } from "reactstrap";
+import { CardHeader, CardBody, Row, Col, Card, Button } from "reactstrap";
+import { Link } from "react-router-dom";
+import DeleteCartModal from "./DeleteCartModal";
 
 function Cart({ supplier_map }) {
   const cart_supplier_rows = [];
@@ -13,7 +15,16 @@ function Cart({ supplier_map }) {
       />
     );
   }
-  return <>{cart_supplier_rows}</>;
+  return (
+    <>
+      <Link to="/checkout" style={{ textDecoration: "none" }}>
+        <Button color="success" block>
+          Go To Checkout
+        </Button>
+      </Link>
+      {cart_supplier_rows}
+    </>
+  );
 }
 
 function mapStateToProps(state) {
@@ -70,6 +81,7 @@ function CartSupplierRow({ supplier, cartItems }) {
         price={price}
         unit={unit}
         quantity={quantity}
+        cartId={cartItem.id}
       />
     );
   });
@@ -83,22 +95,38 @@ function CartSupplierRow({ supplier, cartItems }) {
   );
 }
 
-function CartItemRow({ productName, price, unit, quantity }) {
+function CartItemRow({ productName, price, unit, quantity, cartId }) {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
-    <CardBody>
-      <Row>
-        <Col lg="9">
-          <div className="h5">{productName}</div>
-          &#8377; {price}/{unit}
-          <br />
-          <i className="fa fa-edit text-dark" /> Edit &nbsp;
-          <i className="fa fa-trash text-danger" /> Remove
-        </Col>
-        <Col className="p-0" lg="3">
-          <h4>{quantity}</h4>
-        </Col>
-      </Row>
-    </CardBody>
+    <>
+      <DeleteCartModal
+        cartId={cartId}
+        open={modalOpen}
+        setModalOpen={setModalOpen}
+      />
+      <CardBody>
+        <Row>
+          <Col lg="9">
+            <div className="h5">{productName}</div>
+            &#8377; {price}/{unit}
+            <br />
+            <i className="fa fa-edit text-dark" /> Edit &nbsp;
+            <a
+              style={{ textDecoration: "none" }}
+              onClick={() => {
+                setModalOpen(true);
+              }}
+            >
+              <i className="fa fa-trash text-danger" /> Remove
+            </a>
+          </Col>
+          <Col className="p-0" lg="3">
+            <h4>{quantity}</h4>
+          </Col>
+        </Row>
+      </CardBody>
+    </>
   );
 }
 
