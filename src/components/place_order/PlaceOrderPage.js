@@ -132,9 +132,8 @@ function ProductRow({
   addCartItem,
   updateCartItem
 }) {
-  const initialButton = constants.CART_ADD;
   const [qty, setQty] = useState(initialQty);
-  const [button, setButton] = useState(initialButton);
+  const [button, setButton] = useState(constants.CART_ADD);
 
   // looks like the inital state setting is async and you need to add this
   useEffect(() => {
@@ -142,7 +141,7 @@ function ProductRow({
     if (initialQty > 0) {
       setButton(constants.CART_ADDED);
     } else {
-      setButton(initialButton);
+      setButton(constants.CART_ADD);
     }
   }, [initialQty]);
 

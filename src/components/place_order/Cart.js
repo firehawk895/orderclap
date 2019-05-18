@@ -3,9 +3,13 @@ import { connect } from "react-redux";
 import { CardHeader, CardBody, Row, Col, Card, Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import DeleteCartModal from "./DeleteCartModal";
-import { deleteCartItem } from "../../redux/actions/cartActions";
+import {
+  deleteCartItem,
+  updateCartItem
+} from "../../redux/actions/cartActions";
+import EditCartModal from "./EditCartModal";
 
-function Cart({ supplier_map, deleteCartItem }) {
+function Cart({ supplier_map, deleteCartItem, updateCartItem }) {
   const cart_supplier_rows = [];
   for (let supplier_id in supplier_map) {
     cart_supplier_rows.push(
@@ -14,6 +18,7 @@ function Cart({ supplier_map, deleteCartItem }) {
         supplier={supplier_map[supplier_id].supplier}
         cartItems={supplier_map[supplier_id].cart_items}
         deleteCartItem={deleteCartItem}
+        updateCartItem={updateCartItem}
       />
     );
   }
@@ -68,10 +73,16 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  deleteCartItem
+  deleteCartItem,
+  updateCartItem
 };
 
-function CartSupplierRow({ supplier, cartItems, deleteCartItem }) {
+function CartSupplierRow({
+  supplier,
+  cartItems,
+  deleteCartItem,
+  updateCartItem
+}) {
   const cart_item_rows = [];
   cartItems.forEach(cartItem => {
     let {
@@ -88,6 +99,7 @@ function CartSupplierRow({ supplier, cartItems, deleteCartItem }) {
         quantity={quantity}
         cartId={cartItem.id}
         deleteCartItem={deleteCartItem}
+        updateCartItem={updateCartItem}
       />
     );
   });
@@ -108,17 +120,24 @@ function CartItemRow({
   unit,
   quantity,
   cartId,
-  deleteCartItem
+  deleteCartItem,
+  updateCartItem
 }) {
-  const [modalOpen, setModalOpen] = useState(false);
-
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   return (
     <>
       <DeleteCartModal
         cartId={cartId}
-        open={modalOpen}
-        setModalOpen={setModalOpen}
+        open={deleteModalOpen}
+        setModalOpen={setDeleteModalOpen}
         deleteCartItem={deleteCartItem}
+      />
+      <EditCartModal
+        open={editModalOpen}
+        setModalOpen={setEditModalOpen}
+        updateCartItem={updateCartItem}
+        cartItem={cartItem}
       />
       <CardBody>
         <Row>
@@ -126,11 +145,18 @@ function CartItemRow({
             <div className="h5">{productName}</div>
             &#8377; {price}/{unit}
             <br />
-            <i className="fa fa-edit text-dark" /> Edit &nbsp;
             <a
               style={{ textDecoration: "none" }}
               onClick={() => {
-                setModalOpen(true);
+                setEditModalOpen(true);
+              }}
+            >
+              <i className="fa fa-edit text-dark" /> Edit &nbsp;
+            </a>
+            <a
+              style={{ textDecoration: "none" }}
+              onClick={() => {
+                setDeleteModalOpen(true);
               }}
             >
               <i className="fa fa-trash text-danger" /> Remove
