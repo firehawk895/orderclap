@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import * as cartsApi from "../../api/cartsApi";
-import { beginApiCall } from "./apiStatusActions";
+import { beginApiCall, apiCallError } from "./apiStatusActions";
 
 export function loadCartsSuccess(carts) {
   return { type: types.LOAD_CARTS_SUCCESS, carts };
@@ -8,6 +8,10 @@ export function loadCartsSuccess(carts) {
 
 export function deleteCartItemOptimistic(cartItem) {
   return { type: types.DELETE_CART_ITEM_OPTIMISTIC, cartItem };
+}
+
+export function createCartItemSuccess(cartItem) {
+  return { type: types.CREATE_CART_ITEM_SUCCESS, cartItem };
 }
 
 // look ma its a thunk
@@ -22,6 +26,25 @@ export function loadCarts() {
       .catch(error => {
         //TODO: convert this to error handler, toast and shiz I guess
         // also an error action and that needs to be handled
+        throw error;
+      });
+  };
+}
+
+export function addCartItem(productId, supplierId, quantity) {
+  return function(dispatch, getState) {
+    console.log(getState());
+    const {
+      restaurant: { id: restaurantId }
+    } = getState();
+    return cartsApi
+      .saveCartItem(productId, restaurantId, supplierId, quantity)
+      .then(savedCartItem => {
+        console.log("lets see what the saved cart item looks like");
+        console.log(savedCartItem);
+        dispatch(createCartItemSuccess(savedCartItem));
+      })
+      .catch(error => {
         throw error;
       });
   };

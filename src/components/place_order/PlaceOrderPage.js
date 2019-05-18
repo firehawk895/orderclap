@@ -2,15 +2,17 @@ import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Table, Button } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
-import { loadCarts } from "../../redux/actions/cartActions";
+import { loadCarts, addCartItem } from "../../redux/actions/cartActions";
 import { InputGroup, Input, Col, Row, Container } from "reactstrap";
 import Cart from "./Cart";
 import * as constants from "./constants";
 import SpinnerWrapper from "../common/SpinnerWrapper";
+import { toast } from "react-toastify";
 
 function PlaceOrderPage({
   loadProducts,
   loadCarts,
+  addCartItem,
   products: { results: product_list },
   cartMap,
   loading
@@ -31,6 +33,7 @@ function PlaceOrderPage({
               <FilterableProductsTable
                 products={product_list}
                 cartMap={cartMap}
+                addCartItem={addCartItem}
               />
             </Col>
             <Col lg="3">
@@ -57,14 +60,21 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
   loadProducts,
-  loadCarts
+  loadCarts,
+  addCartItem
 };
 
-function FilterableProductsTable({ products, cartMap }) {
-  return <ProductTable products={products} cartMap={cartMap} />;
+function FilterableProductsTable({ products, cartMap, addCartItem }) {
+  return (
+    <ProductTable
+      products={products}
+      cartMap={cartMap}
+      addCartItem={addCartItem}
+    />
+  );
 }
 
-function ProductTable({ products, cartMap }) {
+function ProductTable({ products, cartMap, addCartItem }) {
   const rows = [];
   products.forEach(product => {
     rows.push(
@@ -72,6 +82,7 @@ function ProductTable({ products, cartMap }) {
         key={product.id}
         product={product}
         initialQty={product.id in cartMap ? cartMap[product.id] : 0}
+        addCartItem={addCartItem}
       />
     );
   });
@@ -89,12 +100,13 @@ function ProductRow({
   product: {
     name,
     id,
-    supplier: { name: supplier_name },
+    supplier: { id: supplier_id, name: supplier_name },
     sku,
     unit,
     price
   },
-  initialQty
+  initialQty,
+  addCartItem
 }) {
   const initialButton = constants.CART_ADD;
   const [qty, setQty] = useState(initialQty);
@@ -129,6 +141,20 @@ function ProductRow({
     setQty(value);
   }
 
+  function handleAddingToCart(event) {
+    event.preventDefault();
+    if (button === constants.CART_ADD) {
+      addCartItem(id, supplier_id, qty)
+        .then(() => {
+          console.log(toast);
+          toast.success("Added to cart");
+        })
+        .catch(the_error => {
+          toast.error(the_error);
+        });
+    }
+  }
+
   return (
     <tr>
       <td>
@@ -154,7 +180,7 @@ function ProductRow({
         </InputGroup>
       </td>
       <td>
-        <Button color={button.colour} block>
+        <Button color={button.colour} onClick={handleAddingToCart} block>
           {button.text}
         </Button>
       </td>

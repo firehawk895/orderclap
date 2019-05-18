@@ -5,8 +5,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
 import configureStore from "./redux/configureStore";
 import { Provider as ReduxProvider } from "react-redux";
+import initalState from "./redux/reducers/initialState";
 
-const store = configureStore();
+const store = configureStore(initalState);
 
 render(
   <ReduxProvider store={store}>

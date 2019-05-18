@@ -8,7 +8,6 @@ import { deleteCartItem } from "../../redux/actions/cartActions";
 function Cart({ supplier_map, deleteCartItem }) {
   const cart_supplier_rows = [];
   for (let supplier_id in supplier_map) {
-    console.log(supplier_id);
     cart_supplier_rows.push(
       <CartSupplierRow
         key={supplier_id}
@@ -36,8 +35,6 @@ function mapStateToProps(state) {
     map[obj.supplier.id] = { supplier: obj.supplier, cart_items: [] };
     return map;
   }, {});
-  console.log("what a map");
-  console.log(supplier_map);
   // filling each supplier with its cart_items
   state.carts.results.forEach(result => {
     supplier_map[result.supplier.id].cart_items.push(result);
