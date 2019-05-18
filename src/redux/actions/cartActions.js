@@ -10,8 +10,12 @@ export function deleteCartItemOptimistic(cartItemId) {
   return { type: types.DELETE_CART_ITEM_OPTIMISTIC, cartItemId };
 }
 
-export function createCartItemSuccess(cartItem) {
-  return { type: types.CREATE_CART_ITEM_SUCCESS, cartItem };
+export function createCartItemOptimistic(cartItem) {
+  return { type: types.CREATE_CART_ITEM_OPTIMISTIC, cartItem };
+}
+
+export function updateCartItemOptimistic(cartItem) {
+  return { type: types.UPDATE_CART_ITEM_OPTIMISTIC, cartItem };
 }
 
 // look ma its a thunk
@@ -33,16 +37,26 @@ export function loadCarts() {
 
 export function addCartItem(productId, supplierId, quantity) {
   return function(dispatch, getState) {
-    console.log(getState());
     const {
       restaurant: { id: restaurantId }
     } = getState();
     return cartsApi
       .saveCartItem(productId, restaurantId, supplierId, quantity)
       .then(savedCartItem => {
-        console.log("lets see what the saved cart item looks like");
-        console.log(savedCartItem);
-        dispatch(createCartItemSuccess(savedCartItem));
+        dispatch(createCartItemOptimistic(savedCartItem));
+      })
+      .catch(error => {
+        throw error;
+      });
+  };
+}
+
+export function updateCartItem(cartItemId, quantity) {
+  return function(dispatch) {
+    return cartsApi
+      .updateCartItem(cartItemId, quantity)
+      .then(updatedCartItem => {
+        dispatch(updateCartItemOptimistic(updatedCartItem));
       })
       .catch(error => {
         throw error;

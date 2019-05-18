@@ -119,7 +119,6 @@ function CartItemRow({
         open={modalOpen}
         setModalOpen={setModalOpen}
         deleteCartItem={deleteCartItem}
-        cartItem={cartItem}
       />
       <CardBody>
         <Row>

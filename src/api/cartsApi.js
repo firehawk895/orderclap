@@ -27,6 +27,21 @@ export function saveCartItem(productId, restaurantId, supplierId, quantity) {
     .catch(handleError);
 }
 
+export function updateCartItem(cartItemId, quantity) {
+  const patch_url = baseUrl + cartItemId + "/";
+  return fetch(patch_url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+    },
+    body: qs.stringify({
+      quantity: quantity
+    })
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
 export function deleteCartItem(cartItemId) {
   return fetch(baseUrl + cartItemId + "/", { method: "DELETE" })
     .then(handleResponse)

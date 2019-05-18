@@ -1,8 +1,12 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Table, Button } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
-import { loadCarts, addCartItem } from "../../redux/actions/cartActions";
+import {
+  loadCarts,
+  addCartItem,
+  updateCartItem
+} from "../../redux/actions/cartActions";
 import { InputGroup, Input, Col, Row, Container } from "reactstrap";
 import Cart from "./Cart";
 import * as constants from "./constants";
@@ -13,6 +17,7 @@ function PlaceOrderPage({
   loadProducts,
   loadCarts,
   addCartItem,
+  updateCartItem,
   products: { results: product_list },
   cartMap,
   loading
@@ -34,6 +39,7 @@ function PlaceOrderPage({
                 products={product_list}
                 cartMap={cartMap}
                 addCartItem={addCartItem}
+                updateCartItem={updateCartItem}
               />
             </Col>
             <Col lg="3">
@@ -49,8 +55,13 @@ function PlaceOrderPage({
 function mapStateToProps(state) {
   const cartMap = {};
   state.carts.results.forEach(cart_item => {
-    cartMap[cart_item.product.id] = cart_item.quantity;
+    cartMap[cart_item.product.id] = {
+      quantity: cart_item.quantity,
+      cartItemId: "id" in cart_item ? cart_item.id : null
+    };
   });
+  console.log("cart map here");
+  console.log(cartMap);
   return {
     products: state.products,
     cartMap,
@@ -61,28 +72,39 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   loadProducts,
   loadCarts,
-  addCartItem
+  addCartItem,
+  updateCartItem
 };
 
-function FilterableProductsTable({ products, cartMap, addCartItem }) {
+function FilterableProductsTable({
+  products,
+  cartMap,
+  addCartItem,
+  updateCartItem
+}) {
   return (
     <ProductTable
       products={products}
       cartMap={cartMap}
       addCartItem={addCartItem}
+      updateCartItem={updateCartItem}
     />
   );
 }
 
-function ProductTable({ products, cartMap, addCartItem }) {
+function ProductTable({ products, cartMap, addCartItem, updateCartItem }) {
   const rows = [];
   products.forEach(product => {
     rows.push(
       <ProductRow
         key={product.id}
         product={product}
-        initialQty={product.id in cartMap ? cartMap[product.id] : 0}
+        initialQty={product.id in cartMap ? cartMap[product.id].quantity : 0}
         addCartItem={addCartItem}
+        cartItemId={
+          product.id in cartMap ? cartMap[product.id].cartItemId : null
+        }
+        updateCartItem={updateCartItem}
       />
     );
   });
@@ -106,7 +128,9 @@ function ProductRow({
     price
   },
   initialQty,
-  addCartItem
+  cartItemId,
+  addCartItem,
+  updateCartItem
 }) {
   const initialButton = constants.CART_ADD;
   const [qty, setQty] = useState(initialQty);
@@ -146,8 +170,15 @@ function ProductRow({
     if (button === constants.CART_ADD) {
       addCartItem(id, supplier_id, qty)
         .then(() => {
-          console.log(toast);
           toast.success("Added to cart");
+        })
+        .catch(the_error => {
+          toast.error(the_error);
+        });
+    } else if (button === constants.CART_UPDATE) {
+      updateCartItem(cartItemId, qty)
+        .then(() => {
+          toast.success("Cart Item Updated.");
         })
         .catch(the_error => {
           toast.error(the_error);
