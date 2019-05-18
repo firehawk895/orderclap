@@ -12,7 +12,7 @@ export default function cartReducer(state = initialStateState.carts, action) {
     case types.DELETE_CART_ITEM_OPTIMISTIC:
       return {
         results: state.results.filter(
-          cartItem => cartItem.id !== action.cartItem.id
+          cartItem => cartItem.id !== action.cartItemId
         )
       };
     default:
