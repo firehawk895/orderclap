@@ -10,6 +10,7 @@ import {
 } from "reactstrap";
 import { toast } from "react-toastify";
 import * as constants from "./constants";
+import { errorToaster } from "../../utils";
 
 function EditCartModal({
   open,
@@ -62,7 +63,7 @@ function EditCartModal({
           setModalOpen(false);
         })
         .catch(the_error => {
-          toast.error(the_error);
+          errorToaster(the_error.message);
         });
     }
   }

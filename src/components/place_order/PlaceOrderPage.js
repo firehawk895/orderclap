@@ -12,6 +12,7 @@ import Cart from "./Cart";
 import * as constants from "./constants";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import { toast } from "react-toastify";
+import { errorToaster } from "../../utils";
 
 function PlaceOrderPage({
   loadProducts,
@@ -60,8 +61,6 @@ function mapStateToProps(state) {
       cartItemId: "id" in cart_item ? cart_item.id : null
     };
   });
-  console.log("cart map here");
-  console.log(cartMap);
   return {
     products: state.products,
     cartMap,
@@ -172,7 +171,7 @@ function ProductRow({
           toast.success("Added to cart");
         })
         .catch(the_error => {
-          toast.error(the_error);
+          errorToaster(the_error.message);
         });
     } else if (button === constants.CART_UPDATE) {
       updateCartItem(cartItemId, qty)
@@ -180,7 +179,7 @@ function ProductRow({
           toast.success("Cart Item Updated.");
         })
         .catch(the_error => {
-          toast.error(the_error);
+          errorToaster(the_error.message);
         });
     }
   }
