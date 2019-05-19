@@ -28,6 +28,7 @@ export function loadCarts() {
         dispatch(loadCartsSuccess(carts));
       })
       .catch(error => {
+        dispatch(apiCallError());
         //TODO: convert this to error handler, toast and shiz I guess
         // also an error action and that needs to be handled
         throw error;

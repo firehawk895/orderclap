@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import * as orderApi from "../../api/orderApi";
-import { beginApiCall } from "./apiStatusActions";
+import { beginApiCall, apiCallError } from "./apiStatusActions";
 
 export function loadOrdersSuccess(orders) {
   return { type: types.LOAD_ORDERS_SUCCESS, orders };
@@ -16,6 +16,7 @@ export function loadOrders() {
         dispatch(loadOrdersSuccess(orders));
       })
       .catch(error => {
+        dispatch(apiCallError());
         //TODO: convert this to error handler, toast and shiz I guess
         // also an error action and that needs to be handled
         throw error;

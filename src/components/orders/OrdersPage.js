@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
-import { Table } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Alert } from "reactstrap";
 import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
-import { Button } from "reactstrap";
 import { is8601_to_readable } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 
@@ -15,14 +14,18 @@ function OrdersPage({
   loading,
   history
 }) {
+  const [errors, setErrors] = useState("");
   useEffect(() => {
-    loadOrders();
+    loadOrders().catch(the_error => setErrors(the_error.message));
   }, []);
+  console.log(errors);
   return (
     <>
       <h2>Order History</h2>
       {loading ? (
         <SpinnerWrapper />
+      ) : errors ? (
+        <Alert color="danger">{errors}</Alert>
       ) : (
         <FilterableOrdersTable orders={order_list} history={history} />
       )}

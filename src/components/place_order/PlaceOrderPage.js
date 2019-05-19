@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Table, Button } from "reactstrap";
+import { Table, Button, Alert } from "reactstrap";
 import { loadProducts } from "../../redux/actions/productActions";
 import {
   loadCarts,
@@ -23,15 +23,19 @@ function PlaceOrderPage({
   cartMap,
   loading
 }) {
+  const [errors, setErrors] = useState("");
   useEffect(() => {
-    loadProducts();
-    loadCarts();
+    Promise.all([loadProducts(), loadCarts()]).catch(the_error =>
+      setErrors(the_error.message)
+    );
   }, []);
   return (
     <>
       <h2>Place Order:</h2>
       {loading ? (
         <SpinnerWrapper />
+      ) : errors ? (
+        <Alert color="danger">{errors}</Alert>
       ) : (
         <Container>
           <Row>
