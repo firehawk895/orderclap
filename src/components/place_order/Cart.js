@@ -8,6 +8,7 @@ import {
   updateCartItem
 } from "../../redux/actions/cartActions";
 import EditCartModal from "./EditCartModal";
+import { getSupplierMap } from "./selectors";
 
 function Cart({ supplier_map, deleteCartItem, updateCartItem }) {
   const cart_supplier_rows = [];
@@ -35,38 +36,7 @@ function Cart({ supplier_map, deleteCartItem, updateCartItem }) {
 }
 
 function mapStateToProps(state) {
-  //making a map keyed with supplier
-  var supplier_map = state.carts.results.reduce(function(map, obj) {
-    map[obj.supplier.id] = { supplier: obj.supplier, cart_items: [] };
-    return map;
-  }, {});
-  // filling each supplier with its cart_items
-  state.carts.results.forEach(result => {
-    supplier_map[result.supplier.id].cart_items.push(result);
-  });
-
-  // supplier map looks like:
-  /*
-  {
-     <supplier_id> : {
-         supplier: <supplier Object>,
-         cart_items: <Array of Cart Items>
-     },
-     <supplier_id> : {
-         supplier: <supplier Object>,
-         cart_items: <Array of Cart Items>
-     },
-     ...
-  }
-  Each Cart Item object loooks like:
-  {
-      supplier: supplier Object,
-      product: product Object,
-      restaurant: restaurant Object,
-      quantity: <number>,
-      note: <String>
-  }
-  */
+  const supplier_map = getSupplierMap(state.carts);
   return {
     supplier_map
   };
@@ -85,19 +55,10 @@ function CartSupplierRow({
 }) {
   const cart_item_rows = [];
   cartItems.forEach(cartItem => {
-    let {
-      product: { name: product_name, price, unit },
-      quantity
-    } = cartItem;
     cart_item_rows.push(
       <CartItemRow
         key={cartItem.id}
         cartItem={cartItem}
-        productName={product_name}
-        price={price}
-        unit={unit}
-        quantity={quantity}
-        cartId={cartItem.id}
         deleteCartItem={deleteCartItem}
         updateCartItem={updateCartItem}
       />
@@ -113,22 +74,13 @@ function CartSupplierRow({
   );
 }
 
-function CartItemRow({
-  cartItem,
-  productName,
-  price,
-  unit,
-  quantity,
-  cartId,
-  deleteCartItem,
-  updateCartItem
-}) {
+function CartItemRow({ cartItem, deleteCartItem, updateCartItem }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   return (
     <>
       <DeleteCartModal
-        cartId={cartId}
+        cartId={cartItem.id}
         open={deleteModalOpen}
         setModalOpen={setDeleteModalOpen}
         deleteCartItem={deleteCartItem}
@@ -142,8 +94,8 @@ function CartItemRow({
       <CardBody>
         <Row>
           <Col lg="9">
-            <div className="h5">{productName}</div>
-            &#8377; {price}/{unit}
+            <div className="h5">{cartItem.product.name}</div>
+            &#8377; {cartItem.product.price}/{cartItem.product.unit}
             <br />
             <a
               style={{ textDecoration: "none" }}
@@ -163,7 +115,7 @@ function CartItemRow({
             </a>
           </Col>
           <Col className="p-0" lg="3">
-            <h4>{quantity}</h4>
+            <h4>{cartItem.quantity}</h4>
           </Col>
         </Row>
       </CardBody>

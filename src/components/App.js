@@ -10,6 +10,7 @@ import OrderCheckInPage from "./checkin/OrderCheckInPage";
 import { ToastContainer } from "react-toastify";
 import { Container } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
+import CheckoutPage from "./place_order/CheckoutPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/place_order" component={PlaceOrderPage} />
         <Route path="/orders/:id" component={OrderDetailsPage} />
         <Route path="/checkin/:id" component={OrderCheckInPage} />
+        <Route path="/checkout" component={CheckoutPage} />
       </Switch>
       <ToastContainer autoClose={3000} hideProgressBar />
     </Container>
