@@ -27,6 +27,10 @@ function EditCartModal({
   const [button, setButton] = useState(constants.CART_ADDED);
 
   useEffect(() => {
+    setQty(quantity);
+  }, [quantity]);
+
+  useEffect(() => {
     if (qty == quantity) {
       setButton(constants.CART_ADDED);
     } else {
