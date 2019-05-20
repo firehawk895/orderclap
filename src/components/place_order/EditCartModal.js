@@ -79,11 +79,11 @@ function EditCartModal({
         <ModalBody className="text-center">
           {supplierName}
           <br />
-          {productName}
+          <b className="text-primary">{productName}</b>
           <br />
-          {sku}
+          SKU: {sku}
           <br />
-          {price}/{unit}
+          &#8377; {price}/{unit}
           <br />
         </ModalBody>
         <ModalFooter>

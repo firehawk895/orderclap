@@ -31,5 +31,14 @@ export function getSupplierMap(cartState) {
       note: <String>
   }
   */
+  const total_key = "total";
+  for (let key in supplier_map) {
+    let supplier_total = 0;
+    supplier_map[key].cart_items.forEach(
+      cart_item =>
+        (supplier_total += cart_item.quantity * cart_item.product.price)
+    );
+    supplier_map[key][total_key] = supplier_total;
+  }
   return supplier_map;
 }
