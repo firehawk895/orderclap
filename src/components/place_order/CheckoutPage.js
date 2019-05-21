@@ -5,6 +5,7 @@ import {
   updateCartItem,
   loadCarts
 } from "../../redux/actions/cartActions";
+import DeleteCartModal from "./DeleteCartModal";
 import { getSupplierMap } from "./selectors";
 import { Link } from "react-router-dom";
 import SpinnerWrapper from "../common/SpinnerWrapper";
@@ -142,6 +143,7 @@ function SupplierRow({
                   <CartItemTable
                     cartItems={cartItems}
                     updateCartItem={updateCartItem}
+                    deleteCartItem={deleteCartItem}
                   />
                 </Card>
               </Collapse>
@@ -163,7 +165,7 @@ function SupplierRow({
   );
 }
 
-function CartItemTable({ cartItems, updateCartItem }) {
+function CartItemTable({ cartItems, updateCartItem, deleteCartItem }) {
   const rows = [];
   cartItems.forEach(cartItem => {
     rows.push(
@@ -171,6 +173,7 @@ function CartItemTable({ cartItems, updateCartItem }) {
         key={cartItem.id}
         cartItem={cartItem}
         updateCartItem={updateCartItem}
+        deleteCartItem={deleteCartItem}
       />
     );
   });
@@ -191,7 +194,8 @@ function CartItemTable({ cartItems, updateCartItem }) {
   );
 }
 
-function CartItemRow({ cartItem, updateCartItem }) {
+function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const hiddenButton = {
     hidden: true,
     text: ""
@@ -266,7 +270,13 @@ function CartItemRow({ cartItem, updateCartItem }) {
         </Button>
       </td>
       <td>
-        <Button>Remove</Button>
+        <Button onClick={() => setDeleteModalOpen(true)}>Remove</Button>
+        <DeleteCartModal
+          cartId={cartItem.id}
+          open={deleteModalOpen}
+          setModalOpen={setDeleteModalOpen}
+          deleteCartItem={deleteCartItem}
+        />
       </td>
       <td>
         <b>&#8377; {cartItem.product.price * cartItem.quantity}</b>
