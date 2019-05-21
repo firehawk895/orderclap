@@ -114,7 +114,13 @@ function ProductTable({ products, cartMap, addCartItem, updateCartItem }) {
   return (
     <>
       <Table striped hover>
-        <thead />
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th />
+          </tr>
+        </thead>
         <tbody>{rows}</tbody>
       </Table>
     </>

@@ -6,6 +6,7 @@ import {
   loadCarts
 } from "../../redux/actions/cartActions";
 import { getSupplierMap } from "./selectors";
+import { Link } from "react-router-dom";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import {
   Alert,
@@ -18,10 +19,12 @@ import {
   Button,
   Collapse,
   Form,
-  FormGroup,
-  Label,
-  Input
+  Input,
+  InputGroup,
+  Table
 } from "reactstrap";
+import { toast } from "react-toastify";
+import { errorToaster } from "../../utils";
 
 function CheckoutPage({
   supplier_map,
@@ -136,19 +139,19 @@ function SupplierRow({
             <Col>
               <Collapse isOpen={isCollapsed}>
                 <Card>
-                  <CardBody>
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life
-                    accusamus terry richardson ad squid. Nihil anim keffiyeh
-                    helvetica, craft beer labore wes anderson cred nesciunt
-                    sapiente ea proident.
-                  </CardBody>
+                  <CartItemTable
+                    cartItems={cartItems}
+                    updateCartItem={updateCartItem}
+                  />
                 </Card>
               </Collapse>
             </Col>
           </Row>
           <Row className="mt-2">
             <Col>
-              <Button color="primary">Add Products</Button>
+              <Link to="/place_order" style={{ textDecoration: "none" }}>
+                <Button color="primary">Add Products</Button>
+              </Link>
             </Col>
             <Col>
               <Button color="danger">Remove Order</Button>
@@ -157,6 +160,118 @@ function SupplierRow({
         </CardBody>
       </Card>
     </>
+  );
+}
+
+function CartItemTable({ cartItems, updateCartItem }) {
+  const rows = [];
+  cartItems.forEach(cartItem => {
+    rows.push(
+      <CartItemRow
+        key={cartItem.id}
+        cartItem={cartItem}
+        updateCartItem={updateCartItem}
+      />
+    );
+  });
+  return (
+    <>
+      <Table striped hover>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th />
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
+    </>
+  );
+}
+
+function CartItemRow({ cartItem, updateCartItem }) {
+  const hiddenButton = {
+    hidden: true,
+    text: ""
+  };
+  const updateButton = {
+    hidden: false,
+    text: "Update"
+  };
+  const [button, setButton] = useState(hiddenButton);
+  const [qty, setQty] = useState(cartItem.quantity);
+
+  useEffect(() => {
+    setQty(cartItem.quantity);
+  }, [cartItem.quantity]);
+
+  useEffect(() => {
+    if (qty == cartItem.quantity) {
+      setButton(hiddenButton);
+    } else {
+      setButton(updateButton);
+    }
+  }, [qty, cartItem.quantity]);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    // don't allow an existing cart item quantity to be reduced to 0
+    if (value == 0) {
+      return;
+    }
+    setQty(value);
+  }
+
+  function handleUpdatingCart(event) {
+    updateCartItem(cartItem.id, qty)
+      .then(() => {
+        toast.success("Cart Item Updated.");
+      })
+      .catch(the_error => {
+        errorToaster(the_error.message);
+      });
+  }
+
+  return (
+    <tr>
+      <td>
+        {cartItem.supplier.name}
+        <br />
+        <b className="text-primary">{cartItem.product.name}</b>
+        <br />
+        SKU: {cartItem.product.sku}
+        <br />
+        &#8377; {cartItem.product.price}/{cartItem.product.unit}
+      </td>
+      <td>
+        <InputGroup>
+          <Input
+            value={qty}
+            placeholder="Qty"
+            min={0}
+            max={100}
+            type="number"
+            step="1"
+            onChange={handleChange}
+          />
+        </InputGroup>
+        <Button
+          hidden={button.hidden}
+          color="success"
+          onClick={handleUpdatingCart}
+        >
+          {button.text}
+        </Button>
+      </td>
+      <td>
+        <Button>Remove</Button>
+      </td>
+      <td>
+        <b>&#8377; {cartItem.product.price * cartItem.quantity}</b>
+      </td>
+    </tr>
   );
 }
 

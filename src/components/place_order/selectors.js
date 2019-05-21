@@ -24,6 +24,7 @@ export function getSupplierMap(cartState) {
   }
   Each Cart Item object looks like:
   {
+      id: <int>,
       supplier: supplier Object,
       product: product Object,
       restaurant: restaurant Object,
