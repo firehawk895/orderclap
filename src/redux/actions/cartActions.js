@@ -2,12 +2,17 @@ import * as types from "./actionTypes";
 import * as cartsApi from "../../api/cartsApi";
 import { beginApiCall, apiCallError } from "./apiStatusActions";
 
+// Action Creators
 export function loadCartsSuccess(carts) {
   return { type: types.LOAD_CARTS_SUCCESS, carts };
 }
 
 export function deleteCartItemOptimistic(cartItemId) {
   return { type: types.DELETE_CART_ITEM_OPTIMISTIC, cartItemId };
+}
+
+export function deleteCartBySuppliersOptimistic(supplierIdList) {
+  return { type: types.DELETE_CART_BY_SUPPLIERS_OPTIMISTIC, supplierIdList };
 }
 
 export function createCartItemOptimistic(cartItem) {
@@ -18,7 +23,7 @@ export function updateCartItemOptimistic(cartItem) {
   return { type: types.UPDATE_CART_ITEM_OPTIMISTIC, cartItem };
 }
 
-// look ma its a thunk
+// Thunks
 export function loadCarts() {
   return function(dispatch) {
     dispatch(beginApiCall());
@@ -29,8 +34,6 @@ export function loadCarts() {
       })
       .catch(error => {
         dispatch(apiCallError());
-        //TODO: convert this to error handler, toast and shiz I guess
-        // also an error action and that needs to be handled
         throw error;
       });
   };
@@ -71,5 +74,17 @@ export function deleteCartItem(cartItemId) {
     // actions, or apiCallError action since we're not showing the loading status for this
     dispatch(deleteCartItemOptimistic(cartItemId));
     return cartsApi.deleteCartItem(cartItemId);
+  };
+}
+
+export function deleteCartBySuppliers(supplierIdList) {
+  return function(dispatch, getState) {
+    const {
+      restaurant: { id: restaurantId }
+    } = getState();
+    // Doing optimistic delete, so not dispatching begin/end api call
+    // actions, or apiCallError action since we're not showing the loading status for this
+    dispatch(deleteCartBySuppliers(supplierIdList));
+    return cartsApi.deleteCartBySuppliers(restaurantId, supplierIdList);
   };
 }

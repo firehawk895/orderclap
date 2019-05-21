@@ -21,6 +21,12 @@ export default function cartReducer(state = initialStateState.carts, action) {
           cartItem => cartItem.id !== action.cartItemId
         )
       };
+    case types.DELETE_CART_BY_SUPPLIERS_OPTIMISTIC:
+      return {
+        results: state.results.filter(
+          cartItem => !action.supplierIdList.includes(cartItem.supplier.id)
+        )
+      };
     default:
       return state;
   }

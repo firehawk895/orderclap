@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { toast } from "react-toastify";
 
-function DeleteCartModal({ cartId, open, setModalOpen, deleteCartItem }) {
+function DeleteModal({
+  open,
+  setModalOpen,
+  closureWrappedMethod,
+  successToastMessage
+}) {
   const closeBtn = (
     <button
       className="close"
@@ -14,17 +19,17 @@ function DeleteCartModal({ cartId, open, setModalOpen, deleteCartItem }) {
     </button>
   );
 
-  function handleDeleteCartItem() {
+  function handleDelete() {
     setModalOpen(false);
-    toast.success("Cart Item deleted.");
-    deleteCartItem(cartId);
+    toast.success(successToastMessage);
+    closureWrappedMethod();
   }
 
   return (
     <>
       <Modal isOpen={open}>
         <ModalHeader close={closeBtn} />
-        <ModalBody className="text-center">Are you suar? (oink oink)</ModalBody>
+        <ModalBody className="text-center">Are you sure?</ModalBody>
         <ModalFooter>
           <Button
             color="primary"
@@ -34,8 +39,8 @@ function DeleteCartModal({ cartId, open, setModalOpen, deleteCartItem }) {
           >
             No!
           </Button>{" "}
-          <Button color="danger" onClick={handleDeleteCartItem}>
-            Yes, Delete it
+          <Button color="danger" onClick={handleDelete}>
+            Yes!
           </Button>
         </ModalFooter>
       </Modal>
@@ -43,4 +48,4 @@ function DeleteCartModal({ cartId, open, setModalOpen, deleteCartItem }) {
   );
 }
 
-export default DeleteCartModal;
+export default DeleteModal;

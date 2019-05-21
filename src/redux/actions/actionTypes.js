@@ -10,6 +10,8 @@ export const API_CALL_ERROR = "API_CALL_ERROR";
 // If it had one, our apiCallsInProgress counter would be decremented below zero
 // because we're not incrementing the number of apiCallInProgress when the delete request begins.
 export const DELETE_CART_ITEM_OPTIMISTIC = "DELETE_CART_ITEM_OPTIMISTIC";
+export const DELETE_CART_BY_SUPPLIERS_OPTIMISTIC =
+  "DELETE_CART_BY_SUPPLIERS_OPTIMISTIC";
 
 // This is not really optimistic, but we don't use a spinner or disable the save/update
 export const CREATE_CART_ITEM_OPTIMISTIC = "CREATE_CART_ITEM_OPTIMISTIC";

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { CardHeader, CardBody, Row, Col, Card, Button } from "reactstrap";
 import { Link } from "react-router-dom";
-import DeleteCartModal from "./DeleteCartModal";
+import DeleteModal from "../common/DeleteModal";
 import {
   deleteCartItem,
   updateCartItem
@@ -77,13 +77,17 @@ function CartSupplierRow({
 function CartItemRow({ cartItem, deleteCartItem, updateCartItem }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+
+  function closureWrappedMethod() {
+    deleteCartItem(cartItem.id);
+  }
   return (
     <>
-      <DeleteCartModal
-        cartId={cartItem.id}
+      <DeleteModal
         open={deleteModalOpen}
         setModalOpen={setDeleteModalOpen}
-        deleteCartItem={deleteCartItem}
+        closureWrappedMethod={closureWrappedMethod}
+        successToastMessage="Cart Item Deleted."
       />
       <EditCartModal
         open={editModalOpen}

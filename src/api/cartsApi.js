@@ -47,3 +47,18 @@ export function deleteCartItem(cartItemId) {
     .then(handleResponse)
     .catch(handleError);
 }
+
+export function deleteCartBySuppliers(restaurantId, supplierIdList) {
+  return fetch(baseUrl + "delete_suppliers_cart" + "/", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      restaurant: restaurantId,
+      supplier_list: supplierIdList
+    })
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}

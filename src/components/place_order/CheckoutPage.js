@@ -5,7 +5,7 @@ import {
   updateCartItem,
   loadCarts
 } from "../../redux/actions/cartActions";
-import DeleteCartModal from "./DeleteCartModal";
+import DeleteModal from "../common/DeleteModal";
 import { getSupplierMap } from "./selectors";
 import { Link } from "react-router-dom";
 import SpinnerWrapper from "../common/SpinnerWrapper";
@@ -238,6 +238,10 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
       });
   }
 
+  function closureWrappedMethod() {
+    deleteCartItem(cartItem.id);
+  }
+
   return (
     <tr>
       <td>
@@ -271,11 +275,11 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
       </td>
       <td>
         <Button onClick={() => setDeleteModalOpen(true)}>Remove</Button>
-        <DeleteCartModal
-          cartId={cartItem.id}
+        <DeleteModal
           open={deleteModalOpen}
           setModalOpen={setDeleteModalOpen}
-          deleteCartItem={deleteCartItem}
+          closureWrappedMethod={closureWrappedMethod}
+          successToastMessage="Cart Item Deleted."
         />
       </td>
       <td>
