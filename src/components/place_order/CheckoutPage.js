@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import {
   deleteCartItem,
   updateCartItem,
-  loadCarts
+  loadCarts,
+  deleteCartBySuppliers
 } from "../../redux/actions/cartActions";
 import DeleteModal from "../common/DeleteModal";
 import { getSupplierMap } from "./selectors";
@@ -31,6 +32,7 @@ function CheckoutPage({
   supplier_map,
   deleteCartItem,
   updateCartItem,
+  deleteCartBySuppliers,
   loading,
   loadCarts,
   total_order_value
@@ -49,6 +51,7 @@ function CheckoutPage({
         total={supplier_map[supplier_id].total}
         deleteCartItem={deleteCartItem}
         updateCartItem={updateCartItem}
+        deleteCartBySuppliers={deleteCartBySuppliers}
       />
     );
   }
@@ -75,7 +78,6 @@ function CheckoutPage({
 
 function mapStateToProps(state) {
   const supplier_map = getSupplierMap(state.carts);
-  // haan bsdk reducer likho
   let total_order_value = 0;
   for (let key in supplier_map) {
     total_order_value += supplier_map[key].total;
@@ -90,7 +92,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   deleteCartItem,
   updateCartItem,
-  loadCarts
+  loadCarts,
+  deleteCartBySuppliers
 };
 
 function SupplierRow({
@@ -98,12 +101,18 @@ function SupplierRow({
   cartItems,
   total,
   deleteCartItem,
-  updateCartItem
+  updateCartItem,
+  deleteCartBySuppliers
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   function toggleCollapse() {
     setIsCollapsed(prevState => !prevState);
+  }
+
+  function closureWrappedMethod() {
+    deleteCartBySuppliers([supplier.id]);
   }
   return (
     <>
@@ -156,7 +165,15 @@ function SupplierRow({
               </Link>
             </Col>
             <Col>
-              <Button color="danger">Remove Order</Button>
+              <Button color="danger" onClick={() => setDeleteModalOpen(true)}>
+                Remove Order
+              </Button>
+              <DeleteModal
+                open={deleteModalOpen}
+                setModalOpen={setDeleteModalOpen}
+                closureWrappedMethod={closureWrappedMethod}
+                successToastMessage="Supplier's items deleted"
+              />
             </Col>
           </Row>
         </CardBody>

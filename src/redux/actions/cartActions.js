@@ -84,7 +84,7 @@ export function deleteCartBySuppliers(supplierIdList) {
     } = getState();
     // Doing optimistic delete, so not dispatching begin/end api call
     // actions, or apiCallError action since we're not showing the loading status for this
-    dispatch(deleteCartBySuppliers(supplierIdList));
+    dispatch(deleteCartBySuppliersOptimistic(supplierIdList));
     return cartsApi.deleteCartBySuppliers(restaurantId, supplierIdList);
   };
 }
