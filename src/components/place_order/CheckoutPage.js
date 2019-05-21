@@ -34,8 +34,7 @@ function CheckoutPage({
   updateCartItem,
   deleteCartBySuppliers,
   loading,
-  loadCarts,
-  total_order_value
+  loadCarts
 }) {
   const [errors, setErrors] = useState("");
   useEffect(() => {
@@ -67,7 +66,10 @@ function CheckoutPage({
           <Row>
             <Col lg="9">{supplier_row_list}</Col>
             <Col lg="3">
-              <CheckoutSummary total={total_order_value} />
+              <CheckoutSummary
+                supplier_map={supplier_map}
+                deleteCartBySuppliers={deleteCartBySuppliers}
+              />
             </Col>
           </Row>
         </Container>
@@ -77,15 +79,9 @@ function CheckoutPage({
 }
 
 function mapStateToProps(state) {
-  const supplier_map = getSupplierMap(state.carts);
-  let total_order_value = 0;
-  for (let key in supplier_map) {
-    total_order_value += supplier_map[key].total;
-  }
   return {
-    supplier_map,
-    loading: state.apiCallsInProgress > 0,
-    total_order_value
+    supplier_map: getSupplierMap(state.carts),
+    loading: state.apiCallsInProgress > 0
   };
 }
 
@@ -111,9 +107,6 @@ function SupplierRow({
     setIsCollapsed(prevState => !prevState);
   }
 
-  function closureWrappedMethod() {
-    deleteCartBySuppliers([supplier.id]);
-  }
   return (
     <>
       <Card>
@@ -171,7 +164,7 @@ function SupplierRow({
               <DeleteModal
                 open={deleteModalOpen}
                 setModalOpen={setDeleteModalOpen}
-                closureWrappedMethod={closureWrappedMethod}
+                deleterThunk={() => deleteCartBySuppliers([supplier.id])}
                 successToastMessage="Supplier's items deleted"
               />
             </Col>
@@ -255,10 +248,6 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
       });
   }
 
-  function closureWrappedMethod() {
-    deleteCartItem(cartItem.id);
-  }
-
   return (
     <tr>
       <td>
@@ -295,7 +284,7 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
         <DeleteModal
           open={deleteModalOpen}
           setModalOpen={setDeleteModalOpen}
-          closureWrappedMethod={closureWrappedMethod}
+          deleterThunk={() => deleteCartItem(cartItem.id)}
           successToastMessage="Cart Item Deleted."
         />
       </td>
@@ -306,7 +295,14 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
   );
 }
 
-function CheckoutSummary({ total }) {
+function CheckoutSummary({ supplier_map, deleteCartBySuppliers }) {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  let total_order_value = 0;
+  for (let key in supplier_map) {
+    total_order_value += supplier_map[key].total;
+  }
+
   return (
     <Row>
       <Col>
@@ -314,19 +310,34 @@ function CheckoutSummary({ total }) {
           <CardHeader>Checkout Summary</CardHeader>
           <CardBody>
             All Orders:
-            <div className="float-right">&#8377; {total}</div>
+            <div className="float-right">&#8377; {total_order_value}</div>
             <br />
             Delivery: <div className="float-right">&#8377; 0</div>
             <br />
             <b>
-              Total: <div className="float-right">&#8377; {total}</div>
+              Total:{" "}
+              <div className="float-right">&#8377; {total_order_value}</div>
             </b>
             <Button className="mt-4" color="success" block>
               Send Orders
             </Button>
-            <Button color="danger" block>
+            <Button
+              color="danger"
+              block
+              onClick={() => setDeleteModalOpen(true)}
+            >
               Remove All Orders
             </Button>
+            <DeleteModal
+              open={deleteModalOpen}
+              setModalOpen={setDeleteModalOpen}
+              deleterThunk={() =>
+                deleteCartBySuppliers(
+                  Object.keys(supplier_map).map(key => parseInt(key))
+                )
+              }
+              successToastMessage="All items Removed"
+            />
           </CardBody>
         </Card>
       </Col>

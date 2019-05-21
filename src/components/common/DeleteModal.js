@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 function DeleteModal({
   open,
   setModalOpen,
-  closureWrappedMethod,
+  deleterThunk,
   successToastMessage
 }) {
   const closeBtn = (
@@ -22,7 +22,7 @@ function DeleteModal({
   function handleDelete() {
     setModalOpen(false);
     toast.success(successToastMessage);
-    closureWrappedMethod();
+    deleterThunk();
   }
 
   return (
