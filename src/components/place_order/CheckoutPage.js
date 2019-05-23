@@ -37,6 +37,7 @@ function CheckoutPage({
   loadCarts
 }) {
   const [errors, setErrors] = useState("");
+  const [supplier_formdata_map, setSupplierFormMap] = useState({});
   useEffect(() => {
     loadCarts().catch(the_error => setErrors(the_error.message));
   }, []);
@@ -51,6 +52,7 @@ function CheckoutPage({
         deleteCartItem={deleteCartItem}
         updateCartItem={updateCartItem}
         deleteCartBySuppliers={deleteCartBySuppliers}
+        setSupplierFormMap={setSupplierFormMap}
       />
     );
   }
@@ -69,6 +71,7 @@ function CheckoutPage({
               <CheckoutSummary
                 supplier_map={supplier_map}
                 deleteCartBySuppliers={deleteCartBySuppliers}
+                supplier_formdata_map={supplier_formdata_map}
               />
             </Col>
           </Row>
@@ -98,13 +101,29 @@ function SupplierRow({
   total,
   deleteCartItem,
   updateCartItem,
-  deleteCartBySuppliers
+  deleteCartBySuppliers,
+  setSupplierFormMap
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deliveryDate, setDeliveryDate] = useState();
 
   function toggleCollapse() {
     setIsCollapsed(prevState => !prevState);
+  }
+
+  function handleDateChange(event) {
+    const { name, value } = event.target;
+    setDeliveryDate(value);
+    setSupplierFormMap(prevState => {
+      const newMap = { ...prevState };
+      newMap[supplier.id] = value;
+      return newMap;
+    });
+  }
+
+  function handlePlaceOrder(event) {
+    console.log(getOrderObject(supplier.id, deliveryDate, cartItems));
   }
 
   return (
@@ -129,11 +148,16 @@ function SupplierRow({
                   name="date"
                   id="exampleDate"
                   placeholder="delivery date"
+                  onChange={handleDateChange}
                 />
               </Form>
             </Col>
             <Col lg="2">
-              <Button className="float-right" color="success">
+              <Button
+                className="float-right"
+                color="success"
+                onClick={handlePlaceOrder}
+              >
                 Place Order
               </Button>
             </Col>
@@ -295,12 +319,30 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
   );
 }
 
-function CheckoutSummary({ supplier_map, deleteCartBySuppliers }) {
+function CheckoutSummary({
+  supplier_map,
+  deleteCartBySuppliers,
+  supplier_formdata_map
+}) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   let total_order_value = 0;
   for (let key in supplier_map) {
     total_order_value += supplier_map[key].total;
+  }
+
+  function handleSendOrders() {
+    const orders = [];
+    for (let supplier_id in supplier_map) {
+      orders.push(
+        getOrderObject(
+          supplier_id,
+          supplier_formdata_map[supplier_id],
+          supplier_map[supplier_id].cart_items
+        )
+      );
+    }
+    console.log(orders);
   }
 
   return (
@@ -318,7 +360,12 @@ function CheckoutSummary({ supplier_map, deleteCartBySuppliers }) {
               Total:{" "}
               <div className="float-right">&#8377; {total_order_value}</div>
             </b>
-            <Button className="mt-4" color="success" block>
+            <Button
+              className="mt-4"
+              color="success"
+              block
+              onClick={handleSendOrders}
+            >
               Send Orders
             </Button>
             <Button
@@ -343,6 +390,23 @@ function CheckoutSummary({ supplier_map, deleteCartBySuppliers }) {
       </Col>
     </Row>
   );
+}
+
+/*
+This is a helper to create an object to send for the Place Order API
+*/
+function getOrderObject(supplierId, deliveryDate, cartItems) {
+  return {
+    supplier_id: supplierId,
+    req_dd: deliveryDate,
+    cart_items: cartItems.map(function(cartItem) {
+      return {
+        id: cartItem.id,
+        product_id: cartItem.product.id,
+        quantity: cartItem.quantity
+      };
+    })
+  };
 }
 
 export default connect(
