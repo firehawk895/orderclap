@@ -1,9 +1,13 @@
 import * as types from "./actionTypes";
 import * as sendOrdersApi from "../../api/sendOrdersApi";
 import { beginApiCall, apiCallError } from "./apiStatusActions";
-import { flatten } from "lodash";
 
-//helpers
+// helpers
+// don't lodash for 1 method bro
+function flatten(arrayOfarrays) {
+  return [].concat.apply([], arrayOfarrays);
+}
+
 function getCardIdListFromOrderObjectList(orderObjectList) {
   const cartIdListOfLists = orderObjectList.map(iter => iter["cart_items"]);
   const cartIdList = flatten(cartIdListOfLists).map(iter => iter["id"]);

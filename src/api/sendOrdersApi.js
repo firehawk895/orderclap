@@ -1,7 +1,5 @@
 import { handleResponse, handleError } from "./apiUtils";
-// this shit needs to be set somewhere
-// const baseUrl = process.env.API_URL + "/orders/";
-const baseUrl = "http://127.0.0.1:8000" + "/send_orders/";
+const baseUrl = process.env.API_URL + "/send_orders/";
 
 export function sendOrders(restaurantId, orderObjectList) {
   /*

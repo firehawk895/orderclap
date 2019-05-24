@@ -1,7 +1,5 @@
 import { handleResponse, handleError } from "./apiUtils";
-// this shit needs to be set somewhere
-// const baseUrl = process.env.API_URL + "/orders/";
-const baseUrl = "http://127.0.0.1:8000" + "/orders/";
+const baseUrl = process.env.API_URL + "/orders/";
 
 export function getOrders() {
   return fetch(baseUrl)
