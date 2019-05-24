@@ -76,3 +76,10 @@ module.exports = {
     ]
   }
 };
+
+/*
+removing the build
+    "build-netlify": "webpack --config webpack.config.prod.js",
+    "postbuild": "run-p serve:build",
+    "serve:build": "http-server ./build"
+    */
