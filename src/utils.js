@@ -1,6 +1,7 @@
 import parse from "date-fns/parse";
 import format from "date-fns/format";
 import { toast } from "react-toastify";
+import flatten from "flat";
 
 export function is8601_to_readable(iso8601_string) {
   if (iso8601_string) {
@@ -23,7 +24,12 @@ that contains the standard django error formatted json.
 */
 export function errorToaster(message) {
   const errorObj = JSON.parse(message);
-  for (let key in errorObj) {
-    errorObj[key].forEach(chotaError => toast.error(key + " : " + chotaError));
+  // a django error object will have deep nesting depending on the request
+  // lets flatten and display all the error messages
+  let flatshiz = flatten(errorObj);
+  console.log("hey developer, here's a more detailed error for you:");
+  console.log(flatshiz);
+  for (let key in flatshiz) {
+    toast.error(key + " " + flatshiz[key]);
   }
 }

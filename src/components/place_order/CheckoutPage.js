@@ -6,6 +6,7 @@ import {
   loadCarts,
   deleteCartBySuppliers
 } from "../../redux/actions/cartActions";
+import { sendOrders } from "../../redux/actions/sendOrdersActions";
 import DeleteModal from "../common/DeleteModal";
 import { getSupplierMap } from "./selectors";
 import { Link } from "react-router-dom";
@@ -34,7 +35,8 @@ function CheckoutPage({
   updateCartItem,
   deleteCartBySuppliers,
   loading,
-  loadCarts
+  loadCarts,
+  sendOrders
 }) {
   const [errors, setErrors] = useState("");
   const [supplier_formdata_map, setSupplierFormMap] = useState({});
@@ -53,6 +55,7 @@ function CheckoutPage({
         updateCartItem={updateCartItem}
         deleteCartBySuppliers={deleteCartBySuppliers}
         setSupplierFormMap={setSupplierFormMap}
+        sendOrders={sendOrders}
       />
     );
   }
@@ -72,6 +75,7 @@ function CheckoutPage({
                 supplier_map={supplier_map}
                 deleteCartBySuppliers={deleteCartBySuppliers}
                 supplier_formdata_map={supplier_formdata_map}
+                sendOrders={sendOrders}
               />
             </Col>
           </Row>
@@ -92,7 +96,8 @@ const mapDispatchToProps = {
   deleteCartItem,
   updateCartItem,
   loadCarts,
-  deleteCartBySuppliers
+  deleteCartBySuppliers,
+  sendOrders
 };
 
 function SupplierRow({
@@ -102,7 +107,8 @@ function SupplierRow({
   deleteCartItem,
   updateCartItem,
   deleteCartBySuppliers,
-  setSupplierFormMap
+  setSupplierFormMap,
+  sendOrders
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -123,7 +129,13 @@ function SupplierRow({
   }
 
   function handlePlaceOrder(event) {
-    console.log(getOrderObject(supplier.id, deliveryDate, cartItems));
+    const orderobj = getOrderObject(supplier.id, deliveryDate, cartItems);
+    sendOrders([orderobj])
+      .then(() => toast.success("Order has been sent to supplier"))
+      .catch(the_error => {
+        errorToaster(the_error.message);
+        toast.error("Try refreshing the page or contact +91-9643713143");
+      });
   }
 
   return (
@@ -322,7 +334,8 @@ function CartItemRow({ cartItem, updateCartItem, deleteCartItem }) {
 function CheckoutSummary({
   supplier_map,
   deleteCartBySuppliers,
-  supplier_formdata_map
+  supplier_formdata_map,
+  sendOrders
 }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
@@ -342,7 +355,12 @@ function CheckoutSummary({
         )
       );
     }
-    console.log(orders);
+    sendOrders(orders)
+      .then(() => toast.success("All Orders have been sent to supplier!"))
+      .catch(the_error => {
+        errorToaster(the_error.message);
+        toast.error("Try refreshing the page or contact +91-9643713143");
+      });
   }
 
   return (
@@ -397,12 +415,12 @@ This is a helper to create an object to send for the Place Order API
 */
 function getOrderObject(supplierId, deliveryDate, cartItems) {
   return {
-    supplier_id: supplierId,
+    supplier: supplierId,
     req_dd: deliveryDate,
     cart_items: cartItems.map(function(cartItem) {
       return {
         id: cartItem.id,
-        product_id: cartItem.product.id,
+        product: cartItem.product.id,
         quantity: cartItem.quantity
       };
     })

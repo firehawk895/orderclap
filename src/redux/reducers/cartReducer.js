@@ -27,6 +27,12 @@ export default function cartReducer(state = initialStateState.carts, action) {
           cartItem => !action.supplierIdList.includes(cartItem.supplier.id)
         )
       };
+    case types.SEND_ORDERS_SUCCESS:
+      return {
+        results: state.results.filter(
+          cartItem => !action.cartIdList.includes(cartItem.id)
+        )
+      };
     default:
       return state;
   }
