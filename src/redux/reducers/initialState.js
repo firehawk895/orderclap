@@ -23,5 +23,6 @@ export default {
     fav_products: [],
     associated_suppliers: [1, 2, 3]
   },
+  orderDetails: {},
   apiCallsInProgress: 0
 };

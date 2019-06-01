@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -10,54 +10,118 @@ import {
   FormGroup,
   Label,
   Input,
-  InputGroup
+  InputGroup,
+  Alert
 } from "reactstrap";
-import { PAYMENT_STATUSES } from "./constants";
+import { connect } from "react-redux";
+import { PAYMENT_STATUSES, STATUSES } from "./constants";
+import { loadOrderDetails } from "../../redux/actions/orderActions";
+import SpinnerWrapper from "../common/SpinnerWrapper";
+import {
+  is8601_to_readable,
+  is8601_to_readable_date,
+  isEmptyObject
+} from "../../utils";
 
-function OrderDetailsPage(props) {
+function OrderDetailsPage({ match, loadOrderDetails, loading, orderDetails }) {
+  const orderId = match.params.id;
+  const [errors, setErrors] = useState("");
+  useEffect(() => {
+    loadOrderDetails(orderId).catch(the_error => setErrors(the_error.message));
+  }, []);
   return (
     <>
-      <h2>Order Details Page</h2>
-      <Row>
-        <Col lg="8">
-          <InvoiceCard />
-        </Col>
-        <Col lg="4">
-          <OrderSummary />
-        </Col>
-      </Row>
+      <h2>Order Details Page: </h2>
+      {loading ? (
+        <SpinnerWrapper />
+      ) : errors ? (
+        <Alert color="danger">{errors}</Alert>
+      ) : (
+        <Row>
+          <Col lg="8">
+            {!isEmptyObject(orderDetails) && (
+              <InvoiceCard orderDetails={orderDetails} />
+            )}
+          </Col>
+          <Col lg="4">
+            {!isEmptyObject(orderDetails) && (
+              <OrderSummary orderDetails={orderDetails} />
+            )}
+          </Col>
+        </Row>
+      )}
     </>
   );
 }
 
-function InvoiceCard(props) {
+function mapStateToProps(state) {
+  return {
+    orderDetails: state.orderDetails,
+    loading: state.apiCallsInProgress > 0
+  };
+}
+
+const mapDispatchToProps = {
+  loadOrderDetails
+};
+
+function InvoiceCard({
+  orderDetails: {
+    supplier,
+    invoice_no,
+    id,
+    requested_delivery_date,
+    created_at,
+    restaurant,
+    checked_in_at,
+    status,
+    order_items
+  }
+}) {
   return (
     <Card>
       <CardBody>
-        <h2 className="text-primary text-center">Kaithal Store</h2>
+        <h2 className="text-primary text-center">{supplier.name}</h2>
         <Row>
           <Col>
-            <b>Order #36651758</b>
+            <b>Order #{id}</b>
             <br />
-            ORGANO FRESH Invoice Number: <b>7562</b>
+            {invoice_no && (
+              <>
+                {supplier.name} Invoice Number: <b>{invoice_no}</b>
+                <br />
+              </>
+            )}
+            {requested_delivery_date && (
+              <>
+                Requested Delivery Date:{" "}
+                <b>{is8601_to_readable_date(requested_delivery_date)}</b>
+                <br />
+              </>
+            )}
             <br />
-            Requested Delivery Date: <b>May 26, 2019</b>
+            Placed by: <b>{restaurant.email}</b>
             <br />
+            Checked in by: <b>{restaurant.email}</b>
             <br />
-            Placed by: <b>crustos@mailinator.com</b>
-            <br />
-            Checked in by: <b>crustos@mailinator.com</b>
-            <br />
-            Checked in at: <b>May 26, 2019 9:50:11 PM</b>
+            {checked_in_at && (
+              <>
+                Checked in at: <b>{is8601_to_readable(checked_in_at)}</b>
+              </>
+            )}
           </Col>
           <Col className="text-right">
             Received: <br />
-            <b>May 31, 2019 12:13 PM</b>
+            <b>{is8601_to_readable(created_at)}</b>
           </Col>
         </Row>
         <br />
         <br />
-        <InvoiceTable />
+        {status === STATUSES.CHECKED_IN ? (
+          <InvoiceTableCheckedIn order_items={order_items} />
+        ) : (
+          <InvoiceTable order_items={order_items} />
+        )}
         <Row>
           <Col lg="8" />
           <Col>
@@ -88,7 +152,72 @@ function InvoiceCard(props) {
   );
 }
 
-function InvoiceTable(props) {
+function OrderItemRow({ orderItem: { quantity, amount, product } }) {
+  return (
+    <tr>
+      <td>{quantity}</td>
+      <td>
+        <b className="text-primary">{product.name}</b>
+        <br />
+        SKU: {product.sku}
+      </td>
+      <td>
+        &#8377; {product.price}/{product.unit}
+      </td>
+      <td>&#8377; {amount}</td>
+    </tr>
+  );
+}
+
+function InvoiceTable({ order_items }) {
+  const rows = [];
+  order_items.forEach(item => {
+    rows.push(<OrderItemRow key={item.id} orderItem={item} />);
+  });
+  return (
+    <Table striped>
+      <thead>
+        <tr>
+          <th>Quantity</th>
+          <th>Product</th>
+          <th>Price/Unit</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </Table>
+  );
+}
+
+function OrderItemCheckedInRow({
+  orderItem: { quantity, qty_received, status, product }
+}) {
+  return (
+    <tr>
+      <td>
+        Ordered: {quantity}
+        <br />
+        Received: {qty_received}
+      </td>
+      <td>{status}</td>
+      <td>
+        {product.name}
+        <br />
+        SKU: {product.sku}
+      </td>
+      <td>
+        &#8377; {product.price}/{product.unit}
+      </td>
+      <td>&#8377; {qty_received * product.price}</td>
+    </tr>
+  );
+}
+
+function InvoiceTableCheckedIn({ order_items }) {
+  const rows = [];
+  order_items.forEach(item => {
+    rows.push(<OrderItemCheckedInRow key={item.id} orderItem={item} />);
+  });
   return (
     <Table striped>
       <thead>
@@ -100,49 +229,28 @@ function InvoiceTable(props) {
           <th>Total Price</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>
-            Ordered: 0.10
-            <br />
-            Received: 0.05
-          </td>
-          <td>Received (Partial)</td>
-          <td>
-            Amul Cheese <br />
-            SKU: 0001
-          </td>
-          <td>&#8377; 2000/1 kg</td>
-          <td>&#8377; 4200</td>
-        </tr>
-        <tr>
-          <td>
-            Ordered: 0.10
-            <br />
-            Received: 0.05
-          </td>
-          <td>Received (Partial)</td>
-          <td>
-            Amul Cheese <br />
-            SKU: 0001
-          </td>
-          <td>&#8377; 2000/1 kg</td>
-          <td>&#8377; 4200</td>
-        </tr>
-      </tbody>
+      <tbody>{rows}</tbody>
     </Table>
   );
 }
 
-function OrderSummary(props) {
+function OrderSummary({
+  orderDetails: { created_at, amount, invoice_no, payment_status }
+}) {
+  const [paymentStatus, setPaymentStatus] = useState(payment_status);
+
+  function handlePaymentChange(event) {
+    const { name, value } = event.target;
+    setPaymentStatus(value);
+  }
   return (
     <Card>
       <CardHeader>Order Summary</CardHeader>
       <CardBody className="d-flex flex-column">
         <div className="p-2">
-          Order Date: <b>May 31, 2019 12:13:48 PM</b>
+          Order Date: <b>{is8601_to_readable(created_at)}</b>
         </div>
-        <div className="p-2">Order Total: &#8377; 264.80</div>
+        <div className="p-2">Order Total: &#8377; {amount}</div>
         <div className="p-2">
           <Button color="primary" block>
             Check-In
@@ -152,7 +260,13 @@ function OrderSummary(props) {
         <div className="p-2">
           <FormGroup>
             <Label for="exampleSelect">Payment Status</Label>
-            <Input type="select" name="select" id="exampleSelect">
+            <Input
+              type="select"
+              name="select"
+              id="exampleSelect"
+              onChange={handlePaymentChange}
+            >
+              <option>{PAYMENT_STATUSES.NONE}</option>
               <option>{PAYMENT_STATUSES.INVOICE_RECEIVED}</option>
               <option>{PAYMENT_STATUSES.PAID_FULL}</option>
               <option>{PAYMENT_STATUSES.PAID_PARTIAL}</option>
@@ -175,4 +289,7 @@ function OrderSummary(props) {
   );
 }
 
-export default OrderDetailsPage;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OrderDetailsPage);

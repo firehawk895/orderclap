@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Alert } from "reactstrap";
 import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
-import { is8601_to_readable } from "../../utils";
+import { is8601_to_readable, is8601_to_readable_date } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 
 /* Maybe you can refactor the usage of history, which in fact is quite tatti,
@@ -18,7 +18,6 @@ function OrdersPage({
   useEffect(() => {
     loadOrders().catch(the_error => setErrors(the_error.message));
   }, []);
-  console.log(errors);
   return (
     <>
       <h2>Order History</h2>
@@ -114,7 +113,7 @@ function OrderRow({
       <td>{id}</td>
       <td>{supplier_name}</td>
       <td>{is8601_to_readable(created_at)}</td>
-      <td>{is8601_to_readable(requested_delivery_date)}</td>
+      <td>{is8601_to_readable_date(requested_delivery_date)}</td>
       <td>&#8377; {amount}</td>
       <td>{invoice_no}</td>
       <td>

@@ -11,6 +11,14 @@ export function is8601_to_readable(iso8601_string) {
   }
 }
 
+export function is8601_to_readable_date(iso8601_string) {
+  if (iso8601_string) {
+    return format(parse(iso8601_string), ["MMM DD, YYYY"]);
+  } else {
+    return null;
+  }
+}
+
 /*
 Expectation: 
 * APIs or whatevers will throw a javascript Error object.
@@ -32,4 +40,9 @@ export function errorToaster(message) {
   for (let key in flatshiz) {
     toast.error(key + " " + flatshiz[key]);
   }
+}
+
+// https://stackoverflow.com/a/24710857/1881812
+export function isEmptyObject(obj) {
+  return Object.keys(obj).length == 0 ? true : false;
 }

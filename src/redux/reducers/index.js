@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import orders from "./orderReducer";
+import orderDetails from "./orderDetailsReducer";
 import products from "./productReducer";
 import carts from "./cartReducer";
 import restaurant from "./restaurantReducer";
@@ -10,7 +11,8 @@ const rootReducer = combineReducers({
   products,
   carts,
   apiCallsInProgress,
-  restaurant
+  restaurant,
+  orderDetails
 });
 
 export default rootReducer;
