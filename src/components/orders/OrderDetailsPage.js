@@ -250,6 +250,7 @@ function OrderSummary({
   patchOrder
 }) {
   const [paymentStatus, setPaymentStatus] = useState(payment_status);
+  const [invoiceNo, setInvoiceNo] = useState(invoice_no);
 
   function handlePaymentChange(event) {
     let { name, value } = event.target;
@@ -262,6 +263,19 @@ function OrderSummary({
     });
     toast.success("Payment status changed!");
   }
+
+  function handleInvoiceNoChange(event) {
+    const { name, value } = event.target;
+    setInvoiceNo(value);
+  }
+
+  function handleSave() {
+    patchOrder(id, {
+      invoice_no: invoiceNo
+    });
+    toast.success("Invoice number saved!");
+  }
+
   return (
     <Card>
       <CardHeader>Order Summary</CardHeader>
@@ -278,7 +292,7 @@ function OrderSummary({
         <hr />
         <div className="p-2">
           <FormGroup>
-            <Label for="exampleSelect">Payment Status</Label>
+            <Label>Payment Status</Label>
             <Input
               type="select"
               onChange={handlePaymentChange}
@@ -295,10 +309,14 @@ function OrderSummary({
         </div>
         <div className="p-2">
           <FormGroup>
-            <Label for="exampleSelect">Invoice Number</Label>
+            <Label>Invoice Number</Label>
             <InputGroup>
-              <Input placeholder="Custom Invoice. No." />
-              <Button color="success">Save</Button>
+              <Input
+                placeholder="Custom Invoice. No."
+                value={invoiceNo}
+                onChange={handleInvoiceNoChange}
+              />
+              <Button color="success" onClick={handleSave}>Save</Button>
             </InputGroup>
           </FormGroup>
         </div>
