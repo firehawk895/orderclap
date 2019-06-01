@@ -20,9 +20,9 @@ export function patchOrder(orderId, payload) {
   return fetch(url, {
     method: "PATCH",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      "Content-Type": "application/json"
     },
-    body: qs.stringify(payload)
+    body: JSON.stringify(payload)
   })
     .then(handleResponse)
     .catch(handleError);

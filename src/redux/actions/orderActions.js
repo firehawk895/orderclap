@@ -10,6 +10,10 @@ export function loadOrderDetailsSuccess(order) {
   return { type: types.LOAD_ORDER_DETAILS_SUCCESS, order };
 }
 
+export function patchOrderOptimistic(orderId, payload) {
+  return { type: types.PATCH_ORDER_OPTIMISTIC, orderId, payload };
+}
+
 // look ma its a thunk
 export function loadOrders() {
   return function(dispatch) {
@@ -40,5 +44,12 @@ export function loadOrderDetails(orderId) {
         dispatch(apiCallError());
         throw error;
       });
+  };
+}
+
+export function patchOrder(orderId, payload) {
+  return function(dispatch) {
+    dispatch(patchOrderOptimistic(orderId, payload));
+    return orderApi.patchOrder(orderId, payload);
   };
 }

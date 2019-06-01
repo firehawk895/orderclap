@@ -18,3 +18,4 @@ export const DELETE_CART_BY_SUPPLIERS_OPTIMISTIC =
 // This is not really optimistic, but we don't use a spinner or disable the save/update
 export const CREATE_CART_ITEM_OPTIMISTIC = "CREATE_CART_ITEM_OPTIMISTIC";
 export const UPDATE_CART_ITEM_OPTIMISTIC = "UPDATE_CART_ITEM_OPTIMISTIC";
+export const PATCH_ORDER_OPTIMISTIC = "PATCH_ORDER_OPTIMISTIC";

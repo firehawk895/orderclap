@@ -8,6 +8,8 @@ export default function orderDetailsReducer(
   switch (action.type) {
     case types.LOAD_ORDER_DETAILS_SUCCESS:
       return action.order;
+    case types.PATCH_ORDER_OPTIMISTIC:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

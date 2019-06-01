@@ -15,15 +15,22 @@ import {
 } from "reactstrap";
 import { connect } from "react-redux";
 import { PAYMENT_STATUSES, STATUSES } from "./constants";
-import { loadOrderDetails } from "../../redux/actions/orderActions";
+import { loadOrderDetails, patchOrder } from "../../redux/actions/orderActions";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import {
   is8601_to_readable,
   is8601_to_readable_date,
   isEmptyObject
 } from "../../utils";
+import { toast } from "react-toastify";
 
-function OrderDetailsPage({ match, loadOrderDetails, loading, orderDetails }) {
+function OrderDetailsPage({
+  match,
+  loadOrderDetails,
+  loading,
+  orderDetails,
+  patchOrder
+}) {
   const orderId = match.params.id;
   const [errors, setErrors] = useState("");
   useEffect(() => {
@@ -45,7 +52,10 @@ function OrderDetailsPage({ match, loadOrderDetails, loading, orderDetails }) {
           </Col>
           <Col lg="4">
             {!isEmptyObject(orderDetails) && (
-              <OrderSummary orderDetails={orderDetails} />
+              <OrderSummary
+                orderDetails={orderDetails}
+                patchOrder={patchOrder}
+              />
             )}
           </Col>
         </Row>
@@ -62,7 +72,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  loadOrderDetails
+  loadOrderDetails,
+  patchOrder
 };
 
 function InvoiceCard({
@@ -102,10 +113,10 @@ function InvoiceCard({
             <br />
             Placed by: <b>{restaurant.email}</b>
             <br />
-            Checked in by: <b>{restaurant.email}</b>
-            <br />
             {checked_in_at && (
               <>
+                Checked in by: <b>{restaurant.email}</b>
+                <br />
                 Checked in at: <b>{is8601_to_readable(checked_in_at)}</b>
               </>
             )}
@@ -235,13 +246,21 @@ function InvoiceTableCheckedIn({ order_items }) {
 }
 
 function OrderSummary({
-  orderDetails: { created_at, amount, invoice_no, payment_status }
+  orderDetails: { id, created_at, amount, invoice_no, payment_status },
+  patchOrder
 }) {
   const [paymentStatus, setPaymentStatus] = useState(payment_status);
 
   function handlePaymentChange(event) {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (value == PAYMENT_STATUSES.NONE) {
+      value = null;
+    }
     setPaymentStatus(value);
+    patchOrder(id, {
+      payment_status: value
+    });
+    toast.success("Payment status changed!");
   }
   return (
     <Card>
@@ -262,9 +281,8 @@ function OrderSummary({
             <Label for="exampleSelect">Payment Status</Label>
             <Input
               type="select"
-              name="select"
-              id="exampleSelect"
               onChange={handlePaymentChange}
+              defaultValue={paymentStatus}
             >
               <option>{PAYMENT_STATUSES.NONE}</option>
               <option>{PAYMENT_STATUSES.INVOICE_RECEIVED}</option>
