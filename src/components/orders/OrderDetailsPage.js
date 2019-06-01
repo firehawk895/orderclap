@@ -86,7 +86,8 @@ function InvoiceCard({
     restaurant,
     checked_in_at,
     status,
-    order_items
+    order_items,
+    amount
   }
 }) {
   return (
@@ -140,7 +141,7 @@ function InvoiceCard({
               <tbody>
                 <tr>
                   <td>Sub Total:</td>
-                  <td>&#8377; 538</td>
+                  <td>&#8377; {amount}</td>
                 </tr>
                 <tr>
                   <td>Delivery Charge:</td>
@@ -148,11 +149,15 @@ function InvoiceCard({
                 </tr>
                 <tr>
                   <td>PO Total:</td>
-                  <td>&#8377; 564.80</td>
+                  <td>&#8377; {amount}</td>
                 </tr>
                 <tr>
-                  <td>Check-in Total:</td>
-                  <td>&#8377; 264.80</td>
+                  {status === STATUSES.CHECKED_IN && (
+                    <>
+                      <td>Check-in Total:</td>
+                      <td>&#8377; 264.80</td>
+                    </>
+                  )}
                 </tr>
               </tbody>
             </Table>
@@ -316,7 +321,9 @@ function OrderSummary({
                 value={invoiceNo}
                 onChange={handleInvoiceNoChange}
               />
-              <Button color="success" onClick={handleSave}>Save</Button>
+              <Button color="success" onClick={handleSave}>
+                Save
+              </Button>
             </InputGroup>
           </FormGroup>
         </div>
