@@ -78,15 +78,12 @@ function CartItemRow({ cartItem, deleteCartItem, updateCartItem }) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
-  function closureWrappedMethod() {
-    deleteCartItem(cartItem.id);
-  }
   return (
     <>
       <DeleteModal
         open={deleteModalOpen}
         setModalOpen={setDeleteModalOpen}
-        closureWrappedMethod={closureWrappedMethod}
+        deleterThunk={() => deleteCartItem(cartItem.id)}
         successToastMessage="Cart Item Deleted."
       />
       <EditCartModal
@@ -102,7 +99,7 @@ function CartItemRow({ cartItem, deleteCartItem, updateCartItem }) {
             &#8377; {cartItem.product.price}/{cartItem.product.unit}
             <br />
             <a
-              style={{ textDecoration: "none" }}
+              style={{ textDecoration: "none", cursor: "pointer" }}
               onClick={() => {
                 setEditModalOpen(true);
               }}
@@ -110,7 +107,7 @@ function CartItemRow({ cartItem, deleteCartItem, updateCartItem }) {
               <i className="fa fa-edit text-dark" /> Edit &nbsp;
             </a>
             <a
-              style={{ textDecoration: "none" }}
+              style={{ textDecoration: "none", cursor: "pointer" }}
               onClick={() => {
                 setDeleteModalOpen(true);
               }}
