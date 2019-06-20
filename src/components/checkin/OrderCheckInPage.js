@@ -23,6 +23,7 @@ import {
   isEmptyObject
 } from "../../utils";
 
+// TODO: when adding a new product create a disabled dropdown with NEW as default
 const CHECKIN_STATUSES = {
   MISSING: "Missing/Not Delivered",
   RECEIVED: "Received (Full)",
@@ -30,9 +31,28 @@ const CHECKIN_STATUSES = {
   RETURNED: "Returned"
 };
 
+function getFormdataMap(orderDetails) {
+  if (isEmptyObject(orderDetails)) {
+    return {};
+  }
+  let theMap = {};
+  orderDetails.order_items.forEach(item => {
+    theMap[item.id] = {
+      qty_received: item.qty_received,
+      status: item.status
+    };
+  });
+}
+
 function OrderCheckInPage({ match, loadOrderDetails, orderDetails }) {
   const orderId = match.params.id;
   const [errors, setErrors] = useState("");
+  // This parent state syncs with the local child state of the items to be checked in
+  // Use this to send out data to the POST API
+  const [checkin_formdata_map, setFormdataMap] = useState(
+    getFormdataMap(orderDetails)
+  );
+
   useEffect(() => {
     loadOrderDetails(orderId).catch(the_error => setErrors(the_error.message));
   }, []);
@@ -43,7 +63,10 @@ function OrderCheckInPage({ match, loadOrderDetails, orderDetails }) {
         <Row>
           <Col>
             {!isEmptyObject(orderDetails) && (
-              <ProductTable orderDetails={orderDetails} />
+              <ProductTable
+                orderDetails={orderDetails}
+                setFormdataMap={setFormdataMap}
+              />
             )}
           </Col>
         </Row>
@@ -64,11 +87,20 @@ function ProductTable({
     status,
     order_items,
     amount
-  }
+  },
+  setFormdataMap
 }) {
   const rows = [];
   order_items.forEach(item => {
-    rows.push(<OrderItemRow key={item.id} orderItem={item} />);
+    rows.push(
+      <OrderItemRow
+        key={item.id}
+        orderItem={item}
+        qty_received={item.qty_received}
+        status={item.status}
+        setFormdataMap={setFormdataMap}
+      />
+    );
   });
   return (
     <>
@@ -124,20 +156,46 @@ function StatusCheckBox({ checkinStatus, handleStatusCheckBoxClick }) {
 }
 
 function OrderItemRow({
-  orderItem: { quantity, qty_received, status, product }
+  orderItem: { id, quantity, qty_received, status, product },
+  setFormdataMap
 }) {
-  const [recdQty, setRecdQty] = useState();
-  const [checkinStatus, setCheckinStatus] = useState();
+  const [recdQty, setRecdQty] = useState(qty_received);
+  const [checkinStatus, setCheckinStatus] = useState(status);
   const [rqText, setRqText] = useState("");
   useEffect(() => {
-    if (recdQty == 0) {
-      setCheckinStatus(CHECKIN_STATUSES.MISSING);
-    } else if (recdQty >= quantity) {
-      setCheckinStatus(CHECKIN_STATUSES.RECEIVED);
-    } else if (recdQty < quantity) {
-      setCheckinStatus(CHECKIN_STATUSES.RECEIVED_PARTIAL);
+    /* > if recdQty is null, javascript translates it to 0 LOL
+          https://stackoverflow.com/a/13407585/1881812, so please ignore comparisons when its null
+       > To keep the comparisons sane, convert it to a 2 place decimal
+       > Quantity has to be a non zero number */
+    if (recdQty) {
+      const decimalRecdQty = parseFloat(recdQty).toFixed(2);
+      const decimalQty = parseFloat(quantity).toFixed(2);
+      if (decimalRecdQty == 0) {
+        setCheckinStatus(CHECKIN_STATUSES.MISSING);
+      } else if (decimalRecdQty >= decimalQty) {
+        setCheckinStatus(CHECKIN_STATUSES.RECEIVED);
+      } else if (decimalRecdQty < decimalQty) {
+        setCheckinStatus(CHECKIN_STATUSES.RECEIVED_PARTIAL);
+      }
+      setFormdataMap(prevState => {
+        const newMap = { ...prevState };
+        if (id in newMap) {
+          newMap[id]["qty_received"] = recdQty;
+        }
+        return newMap;
+      });
     }
   }, [recdQty]);
+
+  useEffect(() => {
+    setFormdataMap(prevState => {
+      const newMap = { ...prevState };
+      if (id in newMap) {
+        newMap[id]["status"] = checkinStatus;
+      }
+      return newMap;
+    });
+  }, [checkinStatus]);
 
   function handleStatusChange(event) {
     const { name, value } = event.target;
@@ -186,8 +244,7 @@ function OrderItemRow({
         <Input
           type="select"
           onChange={handleStatusChange}
-          defaultValue=""
-          value={checkinStatus}
+          value={checkinStatus || ""}
         >
           <option />
           <option>{CHECKIN_STATUSES.RECEIVED}</option>
@@ -202,7 +259,9 @@ function OrderItemRow({
       <td className="align-middle">{product.sku}</td>
       <td className="align-middle">{product.price}</td>
       <td className="align-middle">
-        {recdQty && <>&#8377; {recdQty * product.price}</>}
+        {recdQty && (
+          <>&#8377; {(recdQty * parseFloat(product.price)).toFixed(2)}</>
+        )}
       </td>
     </tr>
   );

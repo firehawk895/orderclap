@@ -39,6 +39,8 @@ function CheckoutPage({
   sendOrders
 }) {
   const [errors, setErrors] = useState("");
+  // This state map maintains all delivery date data from its children components
+  // to be later included in the send orders API
   const [supplier_formdata_map, setSupplierFormMap] = useState({});
   useEffect(() => {
     loadCarts().catch(the_error => setErrors(the_error.message));
