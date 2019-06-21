@@ -8,7 +8,7 @@ function flatten(arrayOfarrays) {
   return [].concat.apply([], arrayOfarrays);
 }
 
-function getCardIdListFromOrderObjectList(orderObjectList) {
+function getCartIdListFromOrderObjectList(orderObjectList) {
   const cartIdListOfLists = orderObjectList.map(iter => iter["cart_items"]);
   const cartIdList = flatten(cartIdListOfLists).map(iter => iter["id"]);
   return cartIdList;
@@ -30,7 +30,7 @@ export function sendOrders(orderObjectList) {
       .sendOrders(restaurantId, orderObjectList)
       .then(results => {
         dispatch(
-          sendOrdersSuccess(getCardIdListFromOrderObjectList(orderObjectList))
+          sendOrdersSuccess(getCartIdListFromOrderObjectList(orderObjectList))
         );
       })
       .catch(error => {

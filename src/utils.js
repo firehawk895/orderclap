@@ -46,3 +46,7 @@ export function errorToaster(message) {
 export function isEmptyObject(obj) {
   return Object.keys(obj).length == 0 ? true : false;
 }
+
+// https://teamtreehouse.com/community/iterating-through-two-arrays-at-the-same-time
+// zip python equivalent in js
+export const zip = (a, b) => a.map((x, i) => [x, b[i]]);
