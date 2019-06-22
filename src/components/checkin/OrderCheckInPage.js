@@ -26,6 +26,7 @@ import {
 import { checkin } from "../../redux/actions/checkinActions";
 import { toast } from "react-toastify";
 import { Redirect } from "react-router-dom";
+import SpinnerWrapper from "../common/SpinnerWrapper";
 
 // TODO: when adding a new product create a disabled dropdown with NEW as default
 const CHECKIN_STATUSES = {
@@ -65,8 +66,6 @@ function getCheckinData(orderId, checkin_formdata_map) {
   };
 }
 
-function jsErrorParser(errorString) {}
-
 /*
 This method sets errors in the checkin_formdata_map, which will reflect
 in the rows of the check in items
@@ -99,7 +98,13 @@ function setErrors(checkin_formdata_map, setFormdataMap, errorString) {
   }
 }
 
-function OrderCheckInPage({ match, loadOrderDetails, orderDetails, checkin }) {
+function OrderCheckInPage({
+  match,
+  loadOrderDetails,
+  orderDetails,
+  checkin,
+  loading
+}) {
   const orderId = match.params.id;
   // This parent state syncs with the local child state of the items to be checked in
   // Use this to send out data to the POST API
@@ -107,9 +112,12 @@ function OrderCheckInPage({ match, loadOrderDetails, orderDetails, checkin }) {
     getFormdataMap(orderDetails)
   );
   const [renderRedirect, setRenderRedirect] = useState(false);
+  const [loadErrors, setLoadErrors] = useState("");
 
   useEffect(() => {
-    loadOrderDetails(orderId).catch(the_error => setErrors(the_error.message));
+    loadOrderDetails(orderId).catch(the_error =>
+      setLoadErrors(the_error.message)
+    );
   }, []);
 
   // This is necessary because useState initialization will be called exactly once
@@ -132,27 +140,33 @@ function OrderCheckInPage({ match, loadOrderDetails, orderDetails, checkin }) {
     <>
       {renderRedirect && <Redirect to="/" />}
       <h2>Order Check in Page</h2>
-      <Container>
-        <Row className="mb-2">
-          <Col lg="10" />
-          <Col>
-            <Button color="primary" onClick={handleCheckin} block>
-              Save
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            {!isEmptyObject(orderDetails) && (
-              <ProductTable
-                orderDetails={orderDetails}
-                setFormdataMap={setFormdataMap}
-                checkin_formdata_map={checkin_formdata_map}
-              />
-            )}
-          </Col>
-        </Row>
-      </Container>
+      {loading ? (
+        <SpinnerWrapper />
+      ) : loadErrors ? (
+        <Alert color="danger">{loadErrors}</Alert>
+      ) : (
+        <Container>
+          <Row className="mb-2">
+            <Col lg="10" />
+            <Col>
+              <Button color="primary" onClick={handleCheckin} block>
+                Save
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {!isEmptyObject(orderDetails) && (
+                <ProductTable
+                  orderDetails={orderDetails}
+                  setFormdataMap={setFormdataMap}
+                  checkin_formdata_map={checkin_formdata_map}
+                />
+              )}
+            </Col>
+          </Row>
+        </Container>
+      )}
     </>
   );
 }
