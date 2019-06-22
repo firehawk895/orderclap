@@ -277,8 +277,8 @@ function OrderItemRow({
        > To keep the comparisons sane, convert it to a 2 place decimal
        > Quantity has to be a non zero number */
     if (recdQty) {
-      const decimalRecdQty = parseFloat(recdQty).toFixed(2);
-      const decimalQty = parseFloat(quantity).toFixed(2);
+      const decimalRecdQty = parseFloat(recdQty);
+      const decimalQty = parseFloat(quantity);
       if (decimalRecdQty == 0) {
         setCheckinStatus(CHECKIN_STATUSES.MISSING);
       } else if (decimalRecdQty >= decimalQty) {
