@@ -193,8 +193,16 @@ function ProductTable({
       <OrderItemRow
         key={item.id}
         orderItem={item}
-        qty_received={item.qty_received}
-        status={item.status}
+        qty_received={
+          item.id in checkin_formdata_map
+            ? checkin_formdata_map[item.id]["qty_received"]
+            : item.qty_received
+        }
+        status={
+          item.id in checkin_formdata_map
+            ? checkin_formdata_map[item.id]["status"]
+            : item.status
+        }
         setFormdataMap={setFormdataMap}
         hasErrors={
           item.id in checkin_formdata_map
@@ -263,14 +271,15 @@ function StatusCheckBox({ checkinStatus, handleStatusCheckBoxClick }) {
 }
 
 function OrderItemRow({
-  orderItem: { id, quantity, qty_received, status, product },
+  orderItem: { id, quantity, product },
   setFormdataMap,
   hasErrors,
-  errorMessage
+  errorMessage,
+  qty_received,
+  status
 }) {
   const [recdQty, setRecdQty] = useState(qty_received);
   const [checkinStatus, setCheckinStatus] = useState(status);
-  const [rqText, setRqText] = useState("");
   useEffect(() => {
     /* > if recdQty is null, javascript translates it to 0 LOL
           https://stackoverflow.com/a/13407585/1881812, so please ignore comparisons when its null
@@ -348,7 +357,7 @@ function OrderItemRow({
               / {quantity}
             </Button>
           </div>
-          <FormFeedback>{rqText}</FormFeedback>
+          <FormFeedback>{errorMessage}</FormFeedback>
         </InputGroup>
       </td>
       <td className="align-middle">
@@ -364,7 +373,6 @@ function OrderItemRow({
           <option>{CHECKIN_STATUSES.MISSING}</option>
           <option>{CHECKIN_STATUSES.RETURNED}</option>
         </Input>
-        <FormFeedback>{errorMessage}</FormFeedback>
       </td>
       <td className="align-middle">{product.unit}</td>
       <td className="align-middle">{product.name}</td>
