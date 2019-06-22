@@ -295,15 +295,16 @@ function OrderItemRow({
       } else if (decimalRecdQty < decimalQty) {
         setCheckinStatus(CHECKIN_STATUSES.RECEIVED_PARTIAL);
       }
-      // Updating Parent state
-      setFormdataMap(prevState => {
-        const newMap = { ...prevState };
-        if (id in newMap) {
-          newMap[id]["qty_received"] = recdQty;
-        }
-        return newMap;
-      });
     }
+    // Updating Parent state
+    // even if its null, because someone the backspace the F out of the field
+    setFormdataMap(prevState => {
+      const newMap = { ...prevState };
+      if (id in newMap) {
+        newMap[id]["qty_received"] = recdQty;
+      }
+      return newMap;
+    });
   }, [recdQty]);
 
   useEffect(() => {
