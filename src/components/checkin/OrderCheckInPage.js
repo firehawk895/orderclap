@@ -108,9 +108,14 @@ function OrderCheckInPage({
   const orderId = match.params.id;
   // This parent state syncs with the local child state of the items to be checked in
   // Use this to send out data to the POST API
+  // React Logic: Intialization means have to use both useState and useEffect
   const [checkin_formdata_map, setFormdataMap] = useState(
     getFormdataMap(orderDetails)
   );
+  useEffect(() => {
+    setFormdataMap(getFormdataMap(orderDetails));
+  }, [orderDetails]);
+
   const [renderRedirect, setRenderRedirect] = useState(false);
   const [loadErrors, setLoadErrors] = useState("");
 
@@ -119,12 +124,6 @@ function OrderCheckInPage({
       setLoadErrors(the_error.message)
     );
   }, []);
-
-  // This is necessary because useState initialization will be called exactly once
-  // and that one time, this shiz is not loaded :/
-  useEffect(() => {
-    setFormdataMap(getFormdataMap(orderDetails));
-  }, [orderDetails]);
 
   function handleCheckin() {
     checkin(getCheckinData(orderId, checkin_formdata_map))
@@ -278,13 +277,25 @@ function OrderItemRow({
   qty_received,
   status
 }) {
+  // Initialization of recdQty
+  // Notice how cutely you have to do both useState and useEffect.
+  // because React Logic, or I don't know what I'm doing
   const [recdQty, setRecdQty] = useState(qty_received);
+  useEffect(() => {
+    setRecdQty(qty_received);
+  }, [qty_received]);
+
+  // Initialization of status
   const [checkinStatus, setCheckinStatus] = useState(status);
   useEffect(() => {
-    /* > if recdQty is null, javascript translates it to 0 LOL
+    setCheckinStatus(status);
+  }, [status]);
+
+  useEffect(() => {
+    /* * if recdQty is null, javascript translates it to 0 LOL
           https://stackoverflow.com/a/13407585/1881812, so please ignore comparisons when its null
-       > To keep the comparisons sane, convert it to a 2 place decimal
-       > Quantity has to be a non zero number */
+       * To keep the comparisons sane, convert it to a float
+       * Quantity has to be a non zero number */
     if (recdQty) {
       const decimalRecdQty = parseFloat(recdQty);
       const decimalQty = parseFloat(quantity);
@@ -297,7 +308,7 @@ function OrderItemRow({
       }
     }
     // Updating Parent state
-    // even if its null, because someone the backspace the F out of the field
+    // even if its null, because someone can backspace the F out of the field
     setFormdataMap(prevState => {
       const newMap = { ...prevState };
       if (id in newMap) {
