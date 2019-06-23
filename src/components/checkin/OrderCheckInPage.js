@@ -2,27 +2,17 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   Container,
-  Card,
-  CardBody,
-  CardHeader,
   Col,
   Row,
   Button,
   Table,
-  FormGroup,
   FormFeedback,
-  Label,
   Input,
   InputGroup,
   Alert
 } from "reactstrap";
 import { loadOrderDetails } from "../../redux/actions/orderActions";
-import {
-  is8601_to_readable,
-  is8601_to_readable_date,
-  isEmptyObject,
-  zip
-} from "../../utils";
+import { isEmptyObject, zip } from "../../utils";
 import { checkin } from "../../redux/actions/checkinActions";
 import { toast } from "react-toastify";
 import { Redirect } from "react-router-dom";
@@ -53,9 +43,16 @@ function getFormdataMap(orderDetails) {
 }
 
 // the helper generates the json to be sent to the API
-function getCheckinData(orderId, checkin_formdata_map) {
+function getCheckinData(
+  orderId,
+  checkin_formdata_map,
+  deliveredOn,
+  invoiceNumber
+) {
   return {
     order: orderId,
+    delivered_on: deliveredOn,
+    invoice_no: invoiceNumber,
     order_items: Object.keys(checkin_formdata_map).map(function(key) {
       return {
         id: key,
@@ -105,6 +102,8 @@ function OrderCheckInPage({
   checkin,
   loading
 }) {
+  // container components should not contain presentation logic
+  // saving the date on a patch will cause formDataMap to reset because of a re-render
   const orderId = match.params.id;
   // This parent state syncs with the local child state of the items to be checked in
   // Use this to send out data to the POST API
@@ -112,8 +111,21 @@ function OrderCheckInPage({
   const [checkin_formdata_map, setFormdataMap] = useState(
     getFormdataMap(orderDetails)
   );
+  console.log(orderDetails);
+  const [deliveredOn, setDeliveredOn] = useState(
+    !isEmptyObject(orderDetails) ? orderDetails.delivered_on : null
+  );
+  const [invoiceNumber, setInvoiceNumber] = useState(
+    !isEmptyObject(orderDetails) ? orderDetails.invoice_no : null
+  );
   useEffect(() => {
     setFormdataMap(getFormdataMap(orderDetails));
+    setDeliveredOn(
+      !isEmptyObject(orderDetails) ? orderDetails.delivered_on : null
+    );
+    setInvoiceNumber(
+      !isEmptyObject(orderDetails) ? orderDetails.invoice_no : null
+    );
   }, [orderDetails]);
 
   const [renderRedirect, setRenderRedirect] = useState(false);
@@ -126,7 +138,9 @@ function OrderCheckInPage({
   }, []);
 
   function handleCheckin() {
-    checkin(getCheckinData(orderId, checkin_formdata_map))
+    checkin(
+      getCheckinData(orderId, checkin_formdata_map, deliveredOn, invoiceNumber)
+    )
       .then(() => {
         toast.success("Your order has been checked-in");
         setRenderRedirect(true);
@@ -135,54 +149,67 @@ function OrderCheckInPage({
         setErrors(checkin_formdata_map, setFormdataMap, errors.message);
       });
   }
+  function handleDateChange(event) {
+    const { name, value } = event.target;
+    setDeliveredOn(value);
+  }
+  function handleInvoiceChange(event) {
+    const { name, value } = event.target;
+    setInvoiceNumber(value);
+  }
   return (
     <>
       {renderRedirect && <Redirect to="/" />}
-      <h2>Order Check in Page</h2>
+      <h2>Order Check-in</h2>
       {loading ? (
         <SpinnerWrapper />
       ) : loadErrors ? (
         <Alert color="danger">{loadErrors}</Alert>
       ) : (
-        <Container>
-          <Row className="mb-2">
-            <Col lg="10" />
-            <Col>
-              <Button color="primary" onClick={handleCheckin} block>
-                Save
-              </Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              {!isEmptyObject(orderDetails) && (
+        !isEmptyObject(orderDetails) && (
+          <Container>
+            <Row className="mb-2">
+              <Col lg="3">
+                <b>{orderDetails.supplier.name + " Invoice Number"}</b>
+                <Input
+                  type="text"
+                  value={invoiceNumber}
+                  onChange={handleInvoiceChange}
+                />
+              </Col>
+              <Col lg="3">
+                <b>Actual Delivery Date</b>
+                <Input
+                  type="date"
+                  value={deliveredOn || ""}
+                  onChange={handleDateChange}
+                />
+              </Col>
+              <Col lg="4" />
+              <Col>
+                <Button color="primary" onClick={handleCheckin} block>
+                  Save
+                </Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <ProductTable
                   orderDetails={orderDetails}
                   setFormdataMap={setFormdataMap}
                   checkin_formdata_map={checkin_formdata_map}
                 />
-              )}
-            </Col>
-          </Row>
-        </Container>
+              </Col>
+            </Row>
+          </Container>
+        )
       )}
     </>
   );
 }
 
 function ProductTable({
-  orderDetails: {
-    supplier,
-    invoice_no,
-    id,
-    requested_delivery_date,
-    created_at,
-    restaurant,
-    checked_in_at,
-    status,
-    order_items,
-    amount
-  },
+  orderDetails: { order_items },
   setFormdataMap,
   checkin_formdata_map
 }) {
