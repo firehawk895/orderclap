@@ -23,6 +23,7 @@ import {
   isEmptyObject
 } from "../../utils";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 function OrderDetailsPage({
   match,
@@ -290,9 +291,11 @@ function OrderSummary({
         </div>
         <div className="p-2">Order Total: &#8377; {amount}</div>
         <div className="p-2">
-          <Button color="primary" block>
-            Check-In
-          </Button>
+          <Link to={"/checkin/" + id} style={{ textDecoration: "none" }}>
+            <Button color="primary" block>
+              Check-In
+            </Button>
+          </Link>
         </div>
         <hr />
         <div className="p-2">
