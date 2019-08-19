@@ -9,7 +9,8 @@ import {
   FormFeedback,
   Input,
   InputGroup,
-  Alert
+  Alert,
+  Form
 } from "reactstrap";
 import { loadOrderDetails } from "../../redux/actions/orderActions";
 import { isEmptyObject, zip } from "../../utils";
@@ -25,6 +26,10 @@ const CHECKIN_STATUSES = {
   RECEIVED_PARTIAL: "Received (Partial)",
   RETURNED: "Returned"
 };
+
+function getSubTotal(checkin_formdata_map, orderDetails) {
+  // I think you were gonna flat and https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
+}
 
 function getFormdataMap(orderDetails) {
   if (isEmptyObject(orderDetails)) {
@@ -199,6 +204,31 @@ function OrderCheckInPage({
                   setFormdataMap={setFormdataMap}
                   checkin_formdata_map={checkin_formdata_map}
                 />
+              </Col>
+            </Row>
+            <Row>
+              <Col lg="8" />
+              <Col>
+                <Table striped>
+                  <tbody>
+                    <tr>
+                      <td>Sub Total:</td>
+                      <td>&#8377; {}</td>
+                    </tr>
+                    <tr>
+                      <td>Delivery Charge:</td>
+                      <td>
+                        <Form inline>
+                          <Input type="number" />
+                        </Form>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Total:</td>
+                      <td>&#8377; {}</td>
+                    </tr>
+                  </tbody>
+                </Table>
               </Col>
             </Row>
           </Container>
