@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
 import { is8601_to_readable, is8601_to_readable_date } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
+import { filterList } from "../../utils";
+import { Input } from "reactstrap";
 
 /* Maybe you can refactor the usage of history, which in fact is quite tatti,
 to using the link component or atleast pass down hostory as a reference, and not super prop drilling */
@@ -44,7 +46,35 @@ const mapDispatchToProps = {
 };
 
 function FilterableOrdersTable({ orders, history }) {
-  return <OrderTable orders={orders} history={history} />;
+  const [filteredOrders, setFilteredOrders] = useState(orders);
+  const [searchText, setSearchText] = useState("");
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setSearchText(value);
+    if (value) {
+      setFilteredOrders(
+        filterList(value, orders, ["supplier.name", "invoice_no"])
+      );
+    } else {
+      setFilteredOrders(orders);
+    }
+  }
+
+  return (
+    <>
+      <Input
+        type="text"
+        placeholder="Search supplier or invoice number..."
+        value={searchText}
+        onChange={handleChange}
+      />
+      <OrderTable orders={filteredOrders} history={history} />
+    </>
+  );
 }
 
 function OrderTable({ orders, history }) {
