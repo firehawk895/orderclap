@@ -12,7 +12,7 @@ import Cart from "./Cart";
 import * as constants from "./constants";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import { toast } from "react-toastify";
-import { errorToaster } from "../../utils";
+import { errorToaster, filterList } from "../../utils";
 
 function PlaceOrderPage({
   loadProducts,
@@ -85,13 +85,44 @@ function FilterableProductsTable({
   addCartItem,
   updateCartItem
 }) {
+  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [searchText, setSearchText] = useState("");
+  useEffect(() => {
+    setFilteredProducts(products);
+  }, [products]);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setSearchText(value);
+    if (value) {
+      setFilteredProducts(
+        filterList(value, products, [
+          "name",
+          "sku",
+          "description",
+          "supplier.name"
+        ])
+      );
+    } else {
+      setFilteredProducts(products);
+    }
+  }
+
   return (
-    <ProductTable
-      products={products}
-      cartMap={cartMap}
-      addCartItem={addCartItem}
-      updateCartItem={updateCartItem}
-    />
+    <>
+      <Input
+        type="text"
+        placeholder="Search..."
+        value={searchText}
+        onChange={handleChange}
+      />
+      <ProductTable
+        products={filteredProducts}
+        cartMap={cartMap}
+        addCartItem={addCartItem}
+        updateCartItem={updateCartItem}
+      />
+    </>
   );
 }
 
