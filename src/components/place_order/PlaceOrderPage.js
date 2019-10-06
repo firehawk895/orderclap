@@ -12,7 +12,7 @@ import Cart from "./Cart";
 import * as constants from "./constants";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import { toast } from "react-toastify";
-import { errorToaster, filterList } from "../../utils";
+import { errorToaster, simpleErrorToaster, filterList } from "../../utils";
 
 function PlaceOrderPage({
   loadProducts,
@@ -197,31 +197,32 @@ function ProductRow({
 
   function handleChange(event) {
     const { name, value } = event.target;
-    // don't allow an existing cart item quantity to be reduced to 0
-    if (value == 0) {
-      return;
-    }
     setQty(value);
   }
 
   function handleAddingToCart(event) {
     event.preventDefault();
-    if (button === constants.CART_ADD) {
-      addCartItem(id, supplier_id, qty)
-        .then(() => {
-          toast.success("Added to cart");
-        })
-        .catch(the_error => {
-          errorToaster(the_error.message);
-        });
-    } else if (button === constants.CART_UPDATE) {
-      updateCartItem(cartItemId, qty)
-        .then(() => {
-          toast.success("Cart Item Updated.");
-        })
-        .catch(the_error => {
-          errorToaster(the_error.message);
-        });
+    if (qty) {
+      if (button === constants.CART_ADD) {
+        addCartItem(id, supplier_id, qty)
+          .then(() => {
+            toast.success("Added to cart");
+          })
+          .catch(the_error => {
+            errorToaster(the_error.message);
+          });
+      } else if (button === constants.CART_UPDATE) {
+        updateCartItem(cartItemId, qty)
+          .then(() => {
+            toast.success("Cart Item Updated.");
+          })
+          .catch(the_error => {
+            errorToaster(the_error.message);
+          });
+      }
+    } else {
+      setQty(initialQty);
+      simpleErrorToaster("Please enter a valid quantity > 0");
     }
   }
 
@@ -242,7 +243,6 @@ function ProductRow({
             value={qty}
             placeholder="Qty"
             min={0}
-            max={100}
             type="number"
             step="1"
             onChange={handleChange}

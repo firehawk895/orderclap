@@ -42,6 +42,10 @@ export function errorToaster(message) {
   }
 }
 
+export function simpleErrorToaster(message) {
+  toast.error(message);
+}
+
 // https://stackoverflow.com/a/24710857/1881812
 export function isEmptyObject(obj) {
   return Object.keys(obj).length == 0 ? true : false;
