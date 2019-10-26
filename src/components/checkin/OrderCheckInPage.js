@@ -28,7 +28,13 @@ const CHECKIN_STATUSES = {
 };
 
 function getSubTotal(checkin_formdata_map, orderDetails) {
-  // I think you were gonna flat and https://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
+  let sum = 0;
+  for (let [checkin_item, order_item] of zip(
+    Object.values(checkin_formdata_map),
+    orderDetails.order_items
+  ))
+    sum += order_item.product.price * checkin_item.qty_received;
+  return sum;
 }
 
 function getFormdataMap(orderDetails) {
@@ -211,21 +217,24 @@ function OrderCheckInPage({
               <Col>
                 <Table striped>
                   <tbody>
-                    <tr>
+                    {/* <tr>
                       <td>Sub Total:</td>
                       <td>&#8377; {}</td>
-                    </tr>
-                    <tr>
+                    </tr> */}
+                    {/* <tr>
                       <td>Delivery Charge:</td>
                       <td>
                         <Form inline>
                           <Input type="number" />
                         </Form>
                       </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td>Total:</td>
-                      <td>&#8377; {}</td>
+                      <td>
+                        &#8377;{" "}
+                        {getSubTotal(checkin_formdata_map, orderDetails)}
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
