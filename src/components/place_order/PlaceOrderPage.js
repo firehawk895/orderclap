@@ -39,7 +39,7 @@ function PlaceOrderPage({
       ) : (
         <Container>
           <Row>
-            <Col lg="9">
+            <Col lg="8">
               <FilterableProductsTable
                 products={product_list}
                 cartMap={cartMap}
@@ -47,7 +47,7 @@ function PlaceOrderPage({
                 updateCartItem={updateCartItem}
               />
             </Col>
-            <Col lg="3">
+            <Col lg="4">
               <Cart />
             </Col>
           </Row>
