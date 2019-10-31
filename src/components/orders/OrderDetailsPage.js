@@ -88,7 +88,8 @@ function InvoiceCard({
     checked_in_at,
     status,
     order_items,
-    amount
+    amount,
+    amount_checked_in
   }
 }) {
   return (
@@ -140,23 +141,26 @@ function InvoiceCard({
           <Col>
             <Table striped>
               <tbody>
-                <tr>
+                {
+                  // Don't need this until delivery charge kicks in as a use case
+                  /* <tr>
                   <td>Sub Total:</td>
                   <td>&#8377; {amount}</td>
-                </tr>
-                <tr>
+                  </tr> */
+                }
+                {/* <tr>
                   <td>Delivery Charge:</td>
                   <td>&#8377; TBD</td>
-                </tr>
+                </tr> */}
                 <tr>
                   <td>PO Total:</td>
-                  <td>&#8377; {amount}</td>
+                  <td className="text-success">&#8377; {amount}</td>
                 </tr>
                 <tr>
                   {status === STATUSES.CHECKED_IN && (
                     <>
                       <td>Check-in Total:</td>
-                      <td>&#8377; 264.80</td>
+                      <td>&#8377; {amount_checked_in}</td>
                     </>
                   )}
                 </tr>
