@@ -6,6 +6,7 @@ import { is8601_to_readable, is8601_to_readable_date } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import { filterList } from "../../utils";
 import { Input } from "reactstrap";
+import { STATUSES } from "./constants";
 
 /* Maybe you can refactor the usage of history, which in fact is quite tatti,
 to using the link component or atleast pass down hostory as a reference, and not super prop drilling */
@@ -131,12 +132,12 @@ function OrderRow({
 
   let buttonText = "Check-In";
   let status_class = "";
-  if (status === "Checked-In") {
+  if (status === STATUSES.CHECKED_IN) {
     buttonText = "Edit Check-In";
     status_class = "text-primary";
-  } else if (status === "Rejected") {
+  } else if (status === STATUSES.REJECTED) {
     status_class = "text-danger";
-  } else if (status === "Delivered") {
+  } else if (status === STATUSES.DELIVERED) {
     status_class = "text-success";
   }
 
@@ -154,14 +155,16 @@ function OrderRow({
       <td>&#8377; {amount}</td>
       <td>{invoice_no}</td>
       <td>
-        <Button
-          name="check-in button"
-          color="primary"
-          block
-          onClick={handleCheckinClick}
-        >
-          {buttonText}
-        </Button>
+        {status != STATUSES.DELIVERED && (
+          <Button
+            name="check-in button"
+            color="primary"
+            block
+            onClick={handleCheckinClick}
+          >
+            {buttonText}
+          </Button>
+        )}
       </td>
     </tr>
   );

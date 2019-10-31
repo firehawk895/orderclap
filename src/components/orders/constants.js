@@ -13,5 +13,6 @@ export const STATUSES = {
   IN_TRANSIT: "In-Transit",
   DELIVERED: "Delivered",
   CANCELLED: "Cancelled",
-  CHECKED_IN: "Checked-In"
+  CHECKED_IN: "Checked-In",
+  REJECTED: "Rejected"
 };

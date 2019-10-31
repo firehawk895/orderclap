@@ -131,7 +131,7 @@ function InvoiceCard({
         </Row>
         <br />
         <br />
-        {status === STATUSES.CHECKED_IN ? (
+        {status === STATUSES.CHECKED_IN || status === STATUSES.DELIVERED ? (
           <InvoiceTableCheckedIn order_items={order_items} />
         ) : (
           <InvoiceTable order_items={order_items} />
@@ -157,7 +157,8 @@ function InvoiceCard({
                   <td className="text-success">&#8377; {amount}</td>
                 </tr>
                 <tr>
-                  {status === STATUSES.CHECKED_IN && (
+                  {(status === STATUSES.CHECKED_IN ||
+                    status == STATUSES.DELIVERED) && (
                     <>
                       <td>Check-in Total:</td>
                       <td>&#8377; {amount_checked_in}</td>
@@ -256,7 +257,7 @@ function InvoiceTableCheckedIn({ order_items }) {
 }
 
 function OrderSummary({
-  orderDetails: { id, created_at, amount, invoice_no, payment_status },
+  orderDetails: { id, created_at, amount, invoice_no, payment_status, status },
   patchOrder
 }) {
   const [paymentStatus, setPaymentStatus] = useState(payment_status);
@@ -272,6 +273,13 @@ function OrderSummary({
       payment_status: value
     });
     toast.success("Payment status changed!");
+  }
+
+  function handleFinalize() {
+    patchOrder(id, {
+      status: STATUSES.DELIVERED
+    });
+    toast.success("Order has been finalized!");
   }
 
   function handleInvoiceNoChange(event) {
@@ -295,11 +303,20 @@ function OrderSummary({
         </div>
         <div className="p-2">Order Total: &#8377; {amount}</div>
         <div className="p-2">
-          <Link to={"/checkin/" + id} style={{ textDecoration: "none" }}>
-            <Button color="primary" block>
-              Check-In
+          {status != STATUSES.DELIVERED && (
+            <Link to={"/checkin/" + id} style={{ textDecoration: "none" }}>
+              <Button color="primary" block>
+                Check-In
+              </Button>
+            </Link>
+          )}
+        </div>
+        <div className="p-2">
+          {status == STATUSES.CHECKED_IN && (
+            <Button color="danger" onClick={handleFinalize} block>
+              Finalize Check-In
             </Button>
-          </Link>
+          )}
         </div>
         <hr />
         <div className="p-2">
