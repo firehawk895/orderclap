@@ -130,16 +130,23 @@ function OrderRow({
   }
 
   let buttonText = "Check-In";
+  let status_class = "";
   if (status === "Checked-In") {
     buttonText = "Edit Check-In";
+    status_class = "text-primary";
+  } else if (status === "Rejected") {
+    status_class = "text-danger";
+  } else if (status === "Delivered") {
+    status_class = "text-success";
   }
+
   const styles = {
     cursor: "pointer"
   };
 
   return (
     <tr onClick={handleRowClick} style={styles}>
-      <td>{status}</td>
+      <td className={status_class}>{status}</td>
       <td>{id}</td>
       <td>{supplier_name}</td>
       <td>{is8601_to_readable(created_at)}</td>
