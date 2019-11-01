@@ -157,7 +157,7 @@ function OrderRow({
       <td>
         {status != STATUSES.DELIVERED && (
           <Button
-            name="check-in button"
+            name={buttonText}
             color="primary"
             block
             onClick={handleCheckinClick}
