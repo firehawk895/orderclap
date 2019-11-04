@@ -1,6 +1,7 @@
 # orderclap
 
 Order Clap front end
+added a \_redirects file to fix netlify page not found issues - https://dev.to/dance2die/page-not-found-on-netlify-with-react-router-58mc
 
 ## Conventions
 
