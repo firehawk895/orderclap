@@ -3,6 +3,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpackBundleAnalyzer = require("webpack-bundle-analyzer");
+const CopyPlugin = require("copy-webpack-plugin");
 
 process.env.NODE_ENV = "production";
 
@@ -45,7 +46,10 @@ module.exports = {
         minifyCSS: true,
         minifyURLs: true
       }
-    })
+    }),
+    new CopyPlugin([
+      { from: "src/_redirects", to: path.resolve(__dirname, "build") }
+    ])
   ],
   module: {
     rules: [
