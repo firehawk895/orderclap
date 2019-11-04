@@ -109,6 +109,7 @@ function OrderRow({
     supplier: { name: supplier_name },
     created_at,
     requested_delivery_date,
+    amount_checked_in,
     amount,
     invoice_no
   },
@@ -152,7 +153,12 @@ function OrderRow({
       <td>{supplier_name}</td>
       <td>{is8601_to_readable(created_at)}</td>
       <td>{is8601_to_readable_date(requested_delivery_date)}</td>
-      <td>&#8377; {amount}</td>
+      <td>
+        &#8377;{" "}
+        {status === STATUSES.DELIVERED || status === STATUSES.CHECKED_IN
+          ? amount_checked_in
+          : amount}
+      </td>
       <td>{invoice_no}</td>
       <td>
         {status != STATUSES.DELIVERED && (
