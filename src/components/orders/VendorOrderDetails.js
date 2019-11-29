@@ -94,7 +94,7 @@ function InvoiceCard({
 }) {
   return (
     <>
-      <h2 className="text-primary text-center">{supplier.name}</h2>
+      <h2 className="text-primary">{supplier.name}</h2>
       <Row>
         <Col>
           <b>Order #{id}</b>
@@ -113,7 +113,8 @@ function InvoiceCard({
             </>
           )}
           <br />
-          Placed by: <b>{restaurant.email}</b>
+          Placed by: <br />
+          <b>{restaurant.email}</b>
           <br />
           {checked_in_at && (
             <>
@@ -122,8 +123,6 @@ function InvoiceCard({
               Checked in at: <b>{is8601_to_readable(checked_in_at)}</b>
             </>
           )}
-        </Col>
-        <Col className="text-right">
           Received: <br />
           <b>{is8601_to_readable(created_at)}</b>
         </Col>
