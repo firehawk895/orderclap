@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import { Container } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 import CheckoutPage from "./place_order/CheckoutPage";
+import VendorOrderDetailsPage from "./orders/VendorOrderDetails";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route exact path="/" component={OrdersPage} />
         <Route path="/place_order" component={PlaceOrderPage} />
         <Route path="/orders/:id" component={OrderDetailsPage} />
+        <Route path="/vendors/orders/:id" component={VendorOrderDetailsPage} />
         <Route path="/checkin/:id" component={OrderCheckInPage} />
         <Route path="/checkout" component={CheckoutPage} />
       </Switch>

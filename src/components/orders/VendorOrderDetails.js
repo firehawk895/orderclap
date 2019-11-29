@@ -25,7 +25,7 @@ import {
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-function OrderDetailsPage({
+function VendorOrderDetailsPage({
   match,
   loadOrderDetails,
   loading,
@@ -39,26 +39,26 @@ function OrderDetailsPage({
   }, []);
   return (
     <>
-      <h2>Order Details Page: </h2>
+      <h2>Order Details: </h2>
       {loading ? (
         <SpinnerWrapper />
       ) : errors ? (
         <Alert color="danger">{errors}</Alert>
       ) : (
         <Row>
-          <Col lg="8">
+          <Col md="12">
             {!isEmptyObject(orderDetails) && (
               <InvoiceCard orderDetails={orderDetails} />
             )}
           </Col>
-          <Col lg="4">
+          {/* <Col lg="4">
             {!isEmptyObject(orderDetails) && (
               <OrderSummary
                 orderDetails={orderDetails}
                 patchOrder={patchOrder}
               />
             )}
-          </Col>
+          </Col> */}
         </Row>
       )}
     </>
@@ -197,7 +197,7 @@ function InvoiceTable({ order_items }) {
     rows.push(<OrderItemRow key={item.id} orderItem={item} />);
   });
   return (
-    <Table responsive striped>
+    <Table striped responsive>
       <thead>
         <tr>
           <th>Quantity</th>
@@ -359,4 +359,4 @@ function OrderSummary({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrderDetailsPage);
+)(VendorOrderDetailsPage);
