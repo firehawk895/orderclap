@@ -93,86 +93,82 @@ function InvoiceCard({
   }
 }) {
   return (
-    <Card>
-      <CardBody>
-        <h2 className="text-primary text-center">{supplier.name}</h2>
-        <Row>
-          <Col>
-            <b>Order #{id}</b>
-            <br />
-            {invoice_no && (
-              <>
-                {supplier.name} Invoice Number: <b>{invoice_no}</b>
-                <br />
-              </>
-            )}
-            {requested_delivery_date && (
-              <>
-                Requested Delivery Date:{" "}
-                <b>{is8601_to_readable_date(requested_delivery_date)}</b>
-                <br />
-              </>
-            )}
-            <br />
-            Placed by: <b>{restaurant.email}</b>
-            <br />
-            {checked_in_at && (
-              <>
-                Checked in by: <b>{restaurant.email}</b>
-                <br />
-                Checked in at: <b>{is8601_to_readable(checked_in_at)}</b>
-              </>
-            )}
-          </Col>
-          <Col className="text-right">
-            Received: <br />
-            <b>{is8601_to_readable(created_at)}</b>
-          </Col>
-        </Row>
-        <br />
-        <br />
-        {status === STATUSES.CHECKED_IN || status === STATUSES.DELIVERED ? (
-          <InvoiceTableCheckedIn order_items={order_items} />
-        ) : (
-          <InvoiceTable order_items={order_items} />
-        )}
-        <Row>
-          <Col lg="8" />
-          <Col>
-            <Table responsive striped>
-              <tbody>
-                {
-                  // Don't need this until delivery charge kicks in as a use case
-                  /* <tr>
+    <>
+      <h2 className="text-primary text-center">{supplier.name}</h2>
+      <Row>
+        <Col>
+          <b>Order #{id}</b>
+          <br />
+          {invoice_no && (
+            <>
+              {supplier.name} Invoice Number: <b>{invoice_no}</b>
+              <br />
+            </>
+          )}
+          {requested_delivery_date && (
+            <>
+              Requested Delivery Date:{" "}
+              <b>{is8601_to_readable_date(requested_delivery_date)}</b>
+              <br />
+            </>
+          )}
+          <br />
+          Placed by: <b>{restaurant.email}</b>
+          <br />
+          {checked_in_at && (
+            <>
+              Checked in by: <b>{restaurant.email}</b>
+              <br />
+              Checked in at: <b>{is8601_to_readable(checked_in_at)}</b>
+            </>
+          )}
+        </Col>
+        <Col className="text-right">
+          Received: <br />
+          <b>{is8601_to_readable(created_at)}</b>
+        </Col>
+      </Row>
+      <br />
+      <br />
+      {status === STATUSES.CHECKED_IN || status === STATUSES.DELIVERED ? (
+        <InvoiceTableCheckedIn order_items={order_items} />
+      ) : (
+        <InvoiceTable order_items={order_items} />
+      )}
+      <Row>
+        <Col lg="8" />
+        <Col>
+          <Table responsive striped>
+            <tbody>
+              {
+                // Don't need this until delivery charge kicks in as a use case
+                /* <tr>
                   <td>Sub Total:</td>
                   <td>&#8377; {amount}</td>
                   </tr> */
-                }
-                {/* <tr>
+              }
+              {/* <tr>
                   <td>Delivery Charge:</td>
                   <td>&#8377; TBD</td>
                 </tr> */}
-                <tr>
-                  <td>PO Total:</td>
-                  <td className="text-success text-right">&#8377; {amount}</td>
-                </tr>
-                <tr>
-                  {(status === STATUSES.CHECKED_IN ||
-                    status == STATUSES.DELIVERED) && (
-                    <>
-                      <td>Check-in Total:</td>
-                      <td className="text-right">
-                        &#8377; {amount_checked_in}
-                      </td>
-                    </>
-                  )}
-                </tr>
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-      </CardBody>
-    </Card>
+              <tr>
+                <td>PO Total:</td>
+                <td className="text-success text-right">&#8377; {amount}</td>
+              </tr>
+              <tr>
+                {(status === STATUSES.CHECKED_IN ||
+                  status == STATUSES.DELIVERED) && (
+                  <>
+                    <td>Check-in Total:</td>
+                    <td className="text-right">&#8377; {amount_checked_in}</td>
+                  </>
+                )}
+              </tr>
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
+    </>
   );
 }
 
