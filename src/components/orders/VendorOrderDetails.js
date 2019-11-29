@@ -154,14 +154,16 @@ function InvoiceCard({
                 </tr> */}
                 <tr>
                   <td>PO Total:</td>
-                  <td className="text-success">&#8377; {amount}</td>
+                  <td className="text-success text-right">&#8377; {amount}</td>
                 </tr>
                 <tr>
                   {(status === STATUSES.CHECKED_IN ||
                     status == STATUSES.DELIVERED) && (
                     <>
                       <td>Check-in Total:</td>
-                      <td>&#8377; {amount_checked_in}</td>
+                      <td className="text-right">
+                        &#8377; {amount_checked_in}
+                      </td>
                     </>
                   )}
                 </tr>
@@ -176,18 +178,26 @@ function InvoiceCard({
 
 function OrderItemRow({ orderItem: { quantity, amount, product } }) {
   return (
-    <tr>
-      <td>{quantity}</td>
-      <td>
-        <b className="text-primary">{product.name}</b>
-        <br />
-        SKU: {product.sku}
-      </td>
-      <td>
-        &#8377; {product.price}/{product.unit}
-      </td>
-      <td>&#8377; {amount}</td>
-    </tr>
+    <Card>
+      <CardHeader>
+        <Row>
+          <Col>
+            <h4 className="text-primary">{product.name}</h4>
+          </Col>
+          <Col className="text-right">&#8377; {amount}</Col>
+        </Row>
+        <Row>
+          <Col>SKU: {product.sku}</Col>
+          <Col className="text-right">qty: {quantity}</Col>
+        </Row>
+        <Row>
+          <Col>
+            &#8377; {product.price}/{product.unit}
+          </Col>
+          <Col></Col>
+        </Row>
+      </CardHeader>
+    </Card>
   );
 }
 
@@ -196,42 +206,39 @@ function InvoiceTable({ order_items }) {
   order_items.forEach(item => {
     rows.push(<OrderItemRow key={item.id} orderItem={item} />);
   });
-  return (
-    <Table striped responsive>
-      <thead>
-        <tr>
-          <th>Quantity</th>
-          <th>Product</th>
-          <th>Price/Unit</th>
-          <th>Total Price</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </Table>
-  );
+  return <>{rows}</>;
 }
 
 function OrderItemCheckedInRow({
   orderItem: { quantity, qty_received, status, product }
 }) {
   return (
-    <tr>
-      <td>
-        Ordered: {quantity}
-        <br />
-        Received: {qty_received}
-      </td>
-      <td>{status}</td>
-      <td>
-        {product.name}
-        <br />
-        SKU: {product.sku}
-      </td>
-      <td>
-        &#8377; {product.price}/{product.unit}
-      </td>
-      <td>&#8377; {qty_received * product.price}</td>
-    </tr>
+    <Card>
+      <CardHeader>
+        <Row>
+          <Col>
+            <h4 className="text-primary">{product.name}</h4>
+          </Col>
+          <Col className="text-right">
+            &#8377; {qty_received * product.price}
+          </Col>
+        </Row>
+        <Row>
+          <Col>SKU: {product.sku}</Col>
+          <Col className="text-right">ord: {quantity}</Col>
+        </Row>
+        <Row>
+          <Col>
+            &#8377; {product.price}/{product.unit}
+          </Col>
+          <Col className="text-right">rcd: {qty_received}</Col>
+        </Row>
+        <Row>
+          <Col>{status}</Col>
+          <Col></Col>
+        </Row>
+      </CardHeader>
+    </Card>
   );
 }
 
@@ -240,20 +247,7 @@ function InvoiceTableCheckedIn({ order_items }) {
   order_items.forEach(item => {
     rows.push(<OrderItemCheckedInRow key={item.id} orderItem={item} />);
   });
-  return (
-    <Table responsive striped>
-      <thead>
-        <tr>
-          <th>Quantity</th>
-          <th>Status</th>
-          <th>Product</th>
-          <th>Price/Unit</th>
-          <th>Total Price</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </Table>
-  );
+  return <>{rows}</>;
 }
 
 function OrderSummary({
