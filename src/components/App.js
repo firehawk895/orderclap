@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 
 import Header from "./common/Header";
 
@@ -13,15 +13,22 @@ import "react-toastify/dist/ReactToastify.css";
 import CheckoutPage from "./place_order/CheckoutPage";
 import VendorOrderDetailsPage from "./orders/VendorOrderDetails";
 
-function App() {
+// As the number of routes increase, the pathname check will not scale
+function App(props) {
   return (
     <Container fluid>
-      <Header />
+      {props.location.pathname == "/" ||
+      props.location.pathname.includes("/vendors") ? (
+        ""
+      ) : (
+        <Header />
+      )}
       <Switch>
-        <Route exact path="/" component={OrdersPage} />
+        <Route exact path="/crustos" component={OrdersPage} />
         <Route path="/place_order" component={PlaceOrderPage} />
         <Route path="/orders/:id" component={OrderDetailsPage} />
         <Route path="/vendors/orders/:id" component={VendorOrderDetailsPage} />
+        <Route path="/vendors/:slug" component={OrdersPage} />
         <Route path="/checkin/:id" component={OrderCheckInPage} />
         <Route path="/checkout" component={CheckoutPage} />
       </Switch>
@@ -30,4 +37,4 @@ function App() {
   );
 }
 
-export default App;
+export default withRouter(App);

@@ -17,6 +17,7 @@ import { connect } from "react-redux";
 import { PAYMENT_STATUSES, STATUSES } from "./constants";
 import { loadOrderDetails, patchOrder } from "../../redux/actions/orderActions";
 import SpinnerWrapper from "../common/SpinnerWrapper";
+import DeleteModal from "../common/DeleteModal";
 import {
   is8601_to_readable,
   is8601_to_readable_date,
@@ -34,32 +35,60 @@ function VendorOrderDetailsPage({
 }) {
   const orderId = match.params.id;
   const [errors, setErrors] = useState("");
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   useEffect(() => {
     loadOrderDetails(orderId).catch(the_error => setErrors(the_error.message));
   }, []);
   return (
     <>
+      <DeleteModal
+        open={deleteModalOpen}
+        setModalOpen={setDeleteModalOpen}
+        deleterThunk={() =>
+          patchOrder(orderId, { status: STATUSES.REJECTED, is_vendor: true })
+        }
+        successToastMessage="Order has been rejected!"
+      />
       <h2>Order Details: </h2>
       {loading ? (
         <SpinnerWrapper />
       ) : errors ? (
         <Alert color="danger">{errors}</Alert>
       ) : (
-        <Row>
-          <Col md="12">
-            {!isEmptyObject(orderDetails) && (
-              <InvoiceCard orderDetails={orderDetails} />
-            )}
-          </Col>
-          {/* <Col lg="4">
-            {!isEmptyObject(orderDetails) && (
-              <OrderSummary
-                orderDetails={orderDetails}
-                patchOrder={patchOrder}
-              />
-            )}
-          </Col> */}
-        </Row>
+        <>
+          <Row>
+            <Col md="12">
+              {!isEmptyObject(orderDetails) && (
+                <InvoiceCard orderDetails={orderDetails} />
+              )}
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Button
+                color="primary"
+                onClick={() =>
+                  patchOrder(orderId, {
+                    status: STATUSES.ACCEPTED,
+                    is_vendor: true
+                  })
+                }
+                size="lg"
+                block
+              >
+                Accept Order
+              </Button>
+              <Button
+                color="danger"
+                size="lg"
+                onClick={() => setDeleteModalOpen(true)}
+                block
+              >
+                Reject Order
+              </Button>
+            </Col>
+          </Row>
+        </>
       )}
     </>
   );
