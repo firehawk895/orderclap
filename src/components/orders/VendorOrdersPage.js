@@ -1,11 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Alert } from "reactstrap";
+import { Link } from "react-router-dom";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Row,
+  Button,
+  Table,
+  FormGroup,
+  Label,
+  Input,
+  InputGroup,
+  Alert
+} from "reactstrap";
 import { connect } from "react-redux";
 import { loadOrders } from "../../redux/actions/orderActions";
 import { is8601_to_readable, is8601_to_readable_date } from "../../utils";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import { filterList } from "../../utils";
-import { Input } from "reactstrap";
 import { STATUSES } from "./constants";
 
 /* Maybe you can refactor the usage of history, which in fact is quite tatti,
@@ -73,7 +86,7 @@ function FilterableOrdersTable({ orders, history }) {
     <>
       <Input
         type="text"
-        placeholder="Search supplier or invoice number..."
+        placeholder="Search invoice number..."
         value={searchText}
         onChange={handleChange}
       />
@@ -87,23 +100,7 @@ function OrderTable({ orders, history }) {
   orders.forEach(order => {
     rows.push(<OrderRow key={order.id} order={order} history={history} />);
   });
-  return (
-    <Table striped hover>
-      <thead>
-        <tr>
-          <th>Status</th>
-          <th>Order #</th>
-          <th>Supplier</th>
-          <th>Date</th>
-          <th>Delivers On</th>
-          <th>Total</th>
-          <th>Invoice #</th>
-          <th>Check-In</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </Table>
-  );
+  return <>{rows}</>;
 }
 
 function OrderRow({
@@ -115,68 +112,73 @@ function OrderRow({
     requested_delivery_date,
     amount_checked_in,
     amount,
-    invoice_no
+    invoice_no,
+    restaurant: { name: restaurant_name }
   },
   history
 }) {
   function handleRowClick(event) {
     const { name, value } = event.target;
-    // make sure to supress this handler if the check in button is clicked
-    if (name === "check-in button") {
-      return;
-    } else {
-      const order_details_route = "/orders/" + id;
-      history.push(order_details_route);
-    }
+    console.log(name);
+    const order_details_route = "/orders/" + id;
+    history.push(order_details_route);
   }
 
-  function handleCheckinClick(event) {
-    const order_checkin_route = "/checkin/" + id;
-    history.push(order_checkin_route);
-  }
-
-  let buttonText = "Check-In";
   let status_class = "";
   if (status === STATUSES.CHECKED_IN) {
-    buttonText = "Edit Check-In";
-    status_class = "text-primary";
+    status_class = "primary";
   } else if (status === STATUSES.REJECTED) {
-    status_class = "text-danger";
+    status_class = "danger";
   } else if (status === STATUSES.DELIVERED) {
-    status_class = "text-success";
+    status_class = "success";
+  } else if (status === STATUSES.SUBMITTED) {
+    status_class = "warning";
+  } else if (status === STATUSES.ACCEPTED) {
+    status_class = "info";
   }
 
-  const styles = {
-    cursor: "pointer"
-  };
-
   return (
-    <tr onClick={handleRowClick} style={styles}>
-      <td className={status_class}>{status}</td>
-      <td>{id}</td>
-      <td>{supplier_name}</td>
-      <td>{is8601_to_readable(created_at)}</td>
-      <td>{is8601_to_readable_date(requested_delivery_date)}</td>
-      <td>
-        &#8377;{" "}
-        {status === STATUSES.DELIVERED || status === STATUSES.CHECKED_IN
-          ? amount_checked_in
-          : amount}
-      </td>
-      <td>{invoice_no}</td>
-      <td>
-        {status != STATUSES.DELIVERED && (
-          <Button
-            name={buttonText}
-            color="primary"
-            block
-            onClick={handleCheckinClick}
-          >
-            {buttonText}
-          </Button>
-        )}
-      </td>
-    </tr>
+    <Link to={"/vendors/orders/" + id}>
+      <Card>
+        <CardHeader>
+          <Row>
+            <Col>
+              <b>Order #{id}</b>
+            </Col>
+            <Col className="text-right">{is8601_to_readable(created_at)}</Col>
+          </Row>
+          <Row>
+            <Col>
+              <b className="text-primary">{restaurant_name}</b>
+            </Col>
+            <Col></Col>
+          </Row>
+          <Row>
+            <Col>
+              &#8377;{" "}
+              {status === STATUSES.DELIVERED || status === STATUSES.CHECKED_IN
+                ? amount_checked_in
+                : amount}
+            </Col>
+            <Col className="text-right">
+              <Button color={status_class} disabled>
+                {status}
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              {requested_delivery_date && (
+                <>
+                  Deliver by: {is8601_to_readable_date(requested_delivery_date)}
+                </>
+              )}
+            </Col>
+            <Col></Col>
+          </Row>
+        </CardHeader>
+      </Card>
+    </Link>
   );
 }
 

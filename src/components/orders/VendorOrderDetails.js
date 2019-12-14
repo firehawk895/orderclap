@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardBody,
@@ -47,6 +48,13 @@ function VendorOrderDetailsPage({
         }
         successToastMessage="Order has been rejected!"
       />
+      {!isEmptyObject(orderDetails) && (
+        <Link to={"/vendors/" + orderDetails.supplier.slug}>
+          <Button block color="primary">
+            Go to Order History
+          </Button>
+        </Link>
+      )}
       <h2>Order Details: </h2>
       {loading ? (
         <SpinnerWrapper />
@@ -66,7 +74,7 @@ function VendorOrderDetailsPage({
               {orderDetails.status === STATUSES.SUBMITTED && (
                 <>
                   <Button
-                    color="primary"
+                    color="success"
                     onClick={() =>
                       patchOrder(orderId, {
                         status: STATUSES.ACCEPTED,
