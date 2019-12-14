@@ -15,11 +15,11 @@ export function patchOrderOptimistic(orderId, payload) {
 }
 
 // look ma its a thunk
-export function loadOrders() {
+export function loadOrders(queryParams = {}) {
   return function(dispatch) {
     dispatch(beginApiCall());
     return orderApi
-      .getOrders()
+      .getOrders(queryParams)
       .then(orders => {
         dispatch(loadOrdersSuccess(orders));
       })

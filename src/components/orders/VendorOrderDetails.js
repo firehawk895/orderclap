@@ -14,7 +14,7 @@ import {
   Alert
 } from "reactstrap";
 import { connect } from "react-redux";
-import { PAYMENT_STATUSES, STATUSES } from "./constants";
+import { STATUSES } from "./constants";
 import { loadOrderDetails, patchOrder } from "../../redux/actions/orderActions";
 import SpinnerWrapper from "../common/SpinnerWrapper";
 import DeleteModal from "../common/DeleteModal";
@@ -23,8 +23,6 @@ import {
   is8601_to_readable_date,
   isEmptyObject
 } from "../../utils";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 
 function VendorOrderDetailsPage({
   match,
@@ -65,27 +63,31 @@ function VendorOrderDetailsPage({
           </Row>
           <Row>
             <Col>
-              <Button
-                color="primary"
-                onClick={() =>
-                  patchOrder(orderId, {
-                    status: STATUSES.ACCEPTED,
-                    is_vendor: true
-                  })
-                }
-                size="lg"
-                block
-              >
-                Accept Order
-              </Button>
-              <Button
-                color="danger"
-                size="lg"
-                onClick={() => setDeleteModalOpen(true)}
-                block
-              >
-                Reject Order
-              </Button>
+              {orderDetails.status === STATUSES.SUBMITTED && (
+                <>
+                  <Button
+                    color="primary"
+                    onClick={() =>
+                      patchOrder(orderId, {
+                        status: STATUSES.ACCEPTED,
+                        is_vendor: true
+                      })
+                    }
+                    size="lg"
+                    block
+                  >
+                    Accept Order
+                  </Button>
+                  <Button
+                    color="danger"
+                    size="lg"
+                    onClick={() => setDeleteModalOpen(true)}
+                    block
+                  >
+                    Reject Order
+                  </Button>
+                </>
+              )}
             </Col>
           </Row>
         </>
@@ -121,6 +123,19 @@ function InvoiceCard({
     amount_checked_in
   }
 }) {
+  let status_class = "";
+  if (status === STATUSES.CHECKED_IN) {
+    status_class = "primary";
+  } else if (status === STATUSES.REJECTED) {
+    status_class = "danger";
+  } else if (status === STATUSES.DELIVERED) {
+    status_class = "success";
+  } else if (status === STATUSES.SUBMITTED) {
+    status_class = "warning";
+  } else if (status === STATUSES.ACCEPTED) {
+    status_class = "info";
+  }
+
   return (
     <>
       <h2 className="text-primary">{supplier.name}</h2>
@@ -154,6 +169,13 @@ function InvoiceCard({
           )}
           Received: <br />
           <b>{is8601_to_readable(created_at)}</b>
+          <br />
+          {}
+          Status:
+          <br />{" "}
+          <Button color={status_class} disabled>
+            {status}
+          </Button>
         </Col>
       </Row>
       <br />
@@ -272,106 +294,6 @@ function InvoiceTableCheckedIn({ order_items }) {
     rows.push(<OrderItemCheckedInRow key={item.id} orderItem={item} />);
   });
   return <>{rows}</>;
-}
-
-function OrderSummary({
-  orderDetails: { id, created_at, amount, invoice_no, payment_status, status },
-  patchOrder
-}) {
-  const [paymentStatus, setPaymentStatus] = useState(payment_status);
-  const [invoiceNo, setInvoiceNo] = useState(invoice_no);
-
-  function handlePaymentChange(event) {
-    let { name, value } = event.target;
-    if (value == PAYMENT_STATUSES.NONE) {
-      value = null;
-    }
-    setPaymentStatus(value);
-    patchOrder(id, {
-      payment_status: value
-    });
-    toast.success("Payment status changed!");
-  }
-
-  function handleFinalize() {
-    patchOrder(id, {
-      status: STATUSES.DELIVERED
-    });
-    toast.success("Order has been finalized!");
-  }
-
-  function handleInvoiceNoChange(event) {
-    const { name, value } = event.target;
-    setInvoiceNo(value);
-  }
-
-  function handleSave() {
-    patchOrder(id, {
-      invoice_no: invoiceNo
-    });
-    toast.success("Invoice number saved!");
-  }
-
-  return (
-    <Card>
-      <CardHeader>Order Summary</CardHeader>
-      <CardBody className="d-flex flex-column">
-        <div className="p-2">
-          Order Date: <b>{is8601_to_readable(created_at)}</b>
-        </div>
-        <div className="p-2">Order Total: &#8377; {amount}</div>
-        <div className="p-2">
-          {status != STATUSES.DELIVERED && (
-            <Link to={"/checkin/" + id} style={{ textDecoration: "none" }}>
-              <Button color="primary" block>
-                Check-In
-              </Button>
-            </Link>
-          )}
-        </div>
-        <div className="p-2">
-          {status == STATUSES.CHECKED_IN && (
-            <Button color="danger" onClick={handleFinalize} block>
-              Finalize Check-In
-            </Button>
-          )}
-        </div>
-        <hr />
-        <div className="p-2">
-          <FormGroup>
-            <Label>Payment Status</Label>
-            <Input
-              type="select"
-              onChange={handlePaymentChange}
-              defaultValue={paymentStatus}
-            >
-              <option>{PAYMENT_STATUSES.NONE}</option>
-              <option>{PAYMENT_STATUSES.INVOICE_RECEIVED}</option>
-              <option>{PAYMENT_STATUSES.PAID_FULL}</option>
-              <option>{PAYMENT_STATUSES.PAID_PARTIAL}</option>
-              <option>{PAYMENT_STATUSES.DISPUTED}</option>
-              <option>{PAYMENT_STATUSES.DUE}</option>
-            </Input>
-          </FormGroup>
-        </div>
-        <div className="p-2">
-          <FormGroup>
-            <Label>Invoice Number</Label>
-            <InputGroup>
-              <Input
-                placeholder="Custom Invoice. No."
-                value={invoiceNo}
-                onChange={handleInvoiceNoChange}
-              />
-              <Button color="success" onClick={handleSave}>
-                Save
-              </Button>
-            </InputGroup>
-          </FormGroup>
-        </div>
-      </CardBody>
-    </Card>
-  );
 }
 
 export default connect(

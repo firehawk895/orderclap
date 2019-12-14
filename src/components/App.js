@@ -12,6 +12,7 @@ import { Container } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 import CheckoutPage from "./place_order/CheckoutPage";
 import VendorOrderDetailsPage from "./orders/VendorOrderDetails";
+import VendorOrdersPage from "./orders/VendorOrdersPage";
 
 // As the number of routes increase, the pathname check will not scale
 function App(props) {
@@ -28,7 +29,7 @@ function App(props) {
         <Route path="/place_order" component={PlaceOrderPage} />
         <Route path="/orders/:id" component={OrderDetailsPage} />
         <Route path="/vendors/orders/:id" component={VendorOrderDetailsPage} />
-        <Route path="/vendors/:slug" component={OrdersPage} />
+        <Route path="/vendors/:slug" component={VendorOrdersPage} />
         <Route path="/checkin/:id" component={OrderCheckInPage} />
         <Route path="/checkout" component={CheckoutPage} />
       </Switch>

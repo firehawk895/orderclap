@@ -2,8 +2,8 @@ import { handleResponse, handleError } from "./apiUtils";
 const baseUrl = process.env.API_URL + "/orders/";
 import qs from "qs";
 
-export function getOrders() {
-  return fetch(baseUrl)
+export function getOrders(queryParams) {
+  return fetch(baseUrl + "?" + qs.stringify(queryParams))
     .then(handleResponse)
     .catch(handleError);
 }
