@@ -7,6 +7,7 @@ import SpinnerWrapper from "../common/SpinnerWrapper";
 import { filterList } from "../../utils";
 import { Input } from "reactstrap";
 import { STATUSES } from "./constants";
+import { statusColourGenerator } from "../../utils";
 
 /* Maybe you can refactor the usage of history, which in fact is quite tatti,
 to using the link component or atleast pass down hostory as a reference, and not super prop drilling */
@@ -148,7 +149,11 @@ function OrderRow({
 
   return (
     <tr onClick={handleRowClick} style={styles}>
-      <td className={status_class}>{status}</td>
+      <td>
+        <Button color={statusColourGenerator(status)} disabled>
+          {status}
+        </Button>
+      </td>
       <td>{id}</td>
       <td>{supplier_name}</td>
       <td>{is8601_to_readable(created_at)}</td>
@@ -161,7 +166,7 @@ function OrderRow({
       </td>
       <td>{invoice_no}</td>
       <td>
-        {status != STATUSES.DELIVERED && (
+        {(status == STATUSES.ACCEPTED || status == STATUSES.CHECKED_IN) && (
           <Button
             name={buttonText}
             color="primary"

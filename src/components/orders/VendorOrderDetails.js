@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Col,
-  Row,
-  Button,
-  Table,
-  FormGroup,
-  Label,
-  Input,
-  InputGroup,
-  Alert
-} from "reactstrap";
+import { Card, CardHeader, Col, Row, Button, Table, Alert } from "reactstrap";
 import { connect } from "react-redux";
 import { STATUSES } from "./constants";
 import { loadOrderDetails, patchOrder } from "../../redux/actions/orderActions";
@@ -24,6 +11,7 @@ import {
   is8601_to_readable_date,
   isEmptyObject
 } from "../../utils";
+import { statusColourGenerator } from "../../utils";
 
 function VendorOrderDetailsPage({
   match,
@@ -131,19 +119,6 @@ function InvoiceCard({
     amount_checked_in
   }
 }) {
-  let status_class = "";
-  if (status === STATUSES.CHECKED_IN) {
-    status_class = "primary";
-  } else if (status === STATUSES.REJECTED) {
-    status_class = "danger";
-  } else if (status === STATUSES.DELIVERED) {
-    status_class = "success";
-  } else if (status === STATUSES.SUBMITTED) {
-    status_class = "warning";
-  } else if (status === STATUSES.ACCEPTED) {
-    status_class = "info";
-  }
-
   return (
     <>
       <h2 className="text-primary">{supplier.name}</h2>
@@ -181,7 +156,7 @@ function InvoiceCard({
           {}
           Status:
           <br />{" "}
-          <Button color={status_class} disabled>
+          <Button color={statusColourGenerator(status)} disabled>
             {status}
           </Button>
         </Col>

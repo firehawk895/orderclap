@@ -2,6 +2,7 @@ import parse from "date-fns/parse";
 import format from "date-fns/format";
 import { toast } from "react-toastify";
 import flatten from "flat";
+import { STATUSES } from "./components/orders/constants";
 
 export function is8601_to_readable(iso8601_string) {
   if (iso8601_string) {
@@ -105,4 +106,20 @@ export function filterList(q, list, attribute_list) {
     });
     return result;
   });
+}
+
+export function statusColourGenerator(status) {
+  var status_class = "";
+  if (status === STATUSES.CHECKED_IN) {
+    status_class = "primary";
+  } else if (status === STATUSES.REJECTED) {
+    status_class = "danger";
+  } else if (status === STATUSES.DELIVERED) {
+    status_class = "success";
+  } else if (status === STATUSES.SUBMITTED) {
+    status_class = "warning";
+  } else if (status === STATUSES.ACCEPTED) {
+    status_class = "info";
+  }
+  return status_class;
 }

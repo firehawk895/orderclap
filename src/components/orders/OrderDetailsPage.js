@@ -24,6 +24,7 @@ import {
 } from "../../utils";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { statusColourGenerator } from "../../utils";
 
 function OrderDetailsPage({
   match,
@@ -293,7 +294,6 @@ function OrderSummary({
     });
     toast.success("Invoice number saved!");
   }
-
   return (
     <Card>
       <CardHeader>Order Summary</CardHeader>
@@ -303,7 +303,13 @@ function OrderSummary({
         </div>
         <div className="p-2">Order Total: &#8377; {amount}</div>
         <div className="p-2">
-          {status != STATUSES.DELIVERED && (
+          Order status:{" "}
+          <Button color={statusColourGenerator(status)} disabled>
+            {status}
+          </Button>
+        </div>
+        <div className="p-2">
+          {(status == STATUSES.CHECKED_IN || status == STATUSES.ACCEPTED) && (
             <Link to={"/checkin/" + id} style={{ textDecoration: "none" }}>
               <Button color="primary" block>
                 Check-In
