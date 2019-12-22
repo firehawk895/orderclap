@@ -170,7 +170,7 @@ function OrderCheckInPage({
   }
   return (
     <>
-      {renderRedirect && <Redirect to="/" />}
+      {renderRedirect && <Redirect to="/crustos" />}
       <h2>Order Check-in</h2>
       {loading ? (
         <SpinnerWrapper />
