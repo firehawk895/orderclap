@@ -185,17 +185,17 @@ function InvoiceCard({
                   <td>&#8377; TBD</td>
                 </tr> */}
               <tr>
-                <td>PO Total:</td>
-                <td className="text-success text-right">&#8377; {amount}</td>
+                {/* <td>PO Total:</td> */}
+                {/* <td className="text-success text-right">&#8377; {amount}</td> */}
               </tr>
               <tr>
-                {(status === STATUSES.CHECKED_IN ||
-                  status == STATUSES.DELIVERED) && (
-                  <>
-                    <td>Check-in Total:</td>
-                    <td className="text-right">&#8377; {amount_checked_in}</td>
-                  </>
-                )}
+                {/* {(status === STATUSES.CHECKED_IN || */}
+                {/* status == STATUSES.DELIVERED) && ( */}
+                {/* <> */}
+                {/* <td>Check-in Total:</td> */}
+                {/* <td className="text-right">&#8377; {amount_checked_in}</td> */}
+                {/* </> */}
+                {/* )} */}
               </tr>
             </tbody>
           </Table>
