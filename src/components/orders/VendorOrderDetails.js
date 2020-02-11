@@ -221,7 +221,8 @@ function OrderItemRow({ orderItem: { quantity, amount, product } }) {
         </Row>
         <Row>
           <Col>
-            &#8377; {product.price}/{product.unit}
+            {/* &#8377; {product.price}/ */}
+            {product.unit}
           </Col>
           <Col></Col>
         </Row>
@@ -249,7 +250,7 @@ function OrderItemCheckedInRow({
             <h4 className="text-primary">{product.name}</h4>
           </Col>
           <Col className="text-right">
-            &#8377; {qty_received * product.price}
+            {/* &#8377; {qty_received * product.price} */}
           </Col>
         </Row>
         <Row>
@@ -258,7 +259,8 @@ function OrderItemCheckedInRow({
         </Row>
         <Row>
           <Col>
-            &#8377; {product.price}/{product.unit}
+            {/* &#8377; {product.price}/ */}
+            unit: {product.unit}
           </Col>
           <Col className="text-right">rcd: {qty_received}</Col>
         </Row>
