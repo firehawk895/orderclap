@@ -214,7 +214,7 @@ function OrderItemRow({ orderItem: { quantity, amount, product } }) {
           <Col>
             <h4 className="text-primary">{product.name}</h4>
           </Col>
-          <Col className="text-right">&#8377; {amount}</Col>
+          {/* <Col className="text-right">&#8377; {amount}</Col> */}
         </Row>
         <Row>
           <Col>SKU: {product.sku}</Col>
