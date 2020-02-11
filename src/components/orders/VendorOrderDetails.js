@@ -141,7 +141,8 @@ function InvoiceCard({
           )}
           <br />
           Placed by: <br />
-          <b>{restaurant.email}</b>
+          {/* <b>{restaurant.email}</b> */}
+          <b>Birdies Enterprises</b>
           <br />
           {checked_in_at && (
             <>
