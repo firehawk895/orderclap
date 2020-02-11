@@ -222,7 +222,7 @@ function OrderItemRow({ orderItem: { quantity, amount, product } }) {
         </Row>
         <Row>
           <Col>
-            {/* &#8377; {product.price}/ */}
+            unit: {/* &#8377; {product.price}/ */}
             {product.unit}
           </Col>
           <Col></Col>
