@@ -88,11 +88,11 @@ function OrderTable({ orders, history }) {
     <Table striped hover>
       <thead>
         <tr>
-          <th>Status</th>
+          <th>Order Status</th>
           <th>Order #</th>
           <th>Supplier</th>
           <th>Date</th>
-          <th>Whatsapp</th>
+          <th>Whatsapp status</th>
           <th>Delivers On</th>
           <th>Total</th>
           <th>Invoice #</th>
