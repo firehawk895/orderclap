@@ -92,6 +92,7 @@ function OrderTable({ orders, history }) {
           <th>Order #</th>
           <th>Supplier</th>
           <th>Date</th>
+          <th>Whatsapp</th>
           <th>Delivers On</th>
           <th>Total</th>
           <th>Invoice #</th>
@@ -112,7 +113,8 @@ function OrderRow({
     requested_delivery_date,
     amount_checked_in,
     amount,
-    invoice_no
+    invoice_no,
+    whatsapp_status
   },
   history
 }) {
@@ -157,6 +159,7 @@ function OrderRow({
       <td>{id}</td>
       <td>{supplier_name}</td>
       <td>{is8601_to_readable(created_at)}</td>
+      <td>{whatsapp_status}</td>
       <td>{is8601_to_readable_date(requested_delivery_date)}</td>
       <td>
         &#8377;{" "}
@@ -181,7 +184,4 @@ function OrderRow({
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrdersPage);
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersPage);
